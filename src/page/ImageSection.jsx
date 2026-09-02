@@ -11,7 +11,7 @@ const ImageSection = () => {
         md:h-[600px]
         lg:h-[700px]
         xl:h-[780px]
-        bg-[url('/images/villa.jpg')]
+        bg-[url('/images/1.jpg')]
         bg-cover
         bg-center
         bg-no-repeat

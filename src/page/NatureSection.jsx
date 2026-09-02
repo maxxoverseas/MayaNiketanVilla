@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 
 const NatureSection = () => {
   const images = [
-    "/images/nature-1.jpg",
-    "/images/nature-2.jpg",
-    "/images/nature-3.jpg",
-    "/images/nature-4.jpg",
+    "/images/1.jpg",
+    "/images/2.jpg",
+    "/images/3.jpg",
+    "/images/4.jpg",
   ];
 
   const highlights = [

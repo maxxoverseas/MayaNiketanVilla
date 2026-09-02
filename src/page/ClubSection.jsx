@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 
 const ClubSection = () => {
   const images = [
-    "/images/club-1.jpg",
-    "/images/club-2.jpg",
-    "/images/club-3.jpg",
-    "/images/club-4.jpg",
+    "/images/2.jpg",
+    "/images/1.jpg",
+    "/images/3.jpg",
+    "/images/4.jpg",
   ];
 
   const amenities = [

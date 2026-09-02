@@ -155,7 +155,7 @@ const LuxuryIntro = () => {
 
               {/* VILLA IMAGE / SKETCH */}
               <img
-                src="/images/villa-sketch.png"
+                src="/images/background1.jpg"
                 alt="Maya Niketan Villa"
                 className="
                   h-[250px]

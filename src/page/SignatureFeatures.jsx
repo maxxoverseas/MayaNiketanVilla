@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 
 const SignatureFeatures = () => {
   const images = [
-    "/images/feature-1.jpg",
-    "/images/feature-2.jpg",
-    "/images/feature-3.jpg",
-    "/images/feature-4.jpg",
+    "/images/background1.jpg",
+    "/images/10.jpg",
+    "/images/9.jpg",
+    "/images/8.jpg",
   ];
 
   const features = [
