@@ -49,19 +49,19 @@ const Amenities = () => {
       label: "RELAX",
       title: "Poolside Living",
       text: "Spend the day by the pool, slow down and enjoy a private setting away from daily routines.",
-      image: "/images/amenities-pool.jpg",
+      image: "/images/3.jpg",
     },
     {
       label: "GATHER",
       title: "Spaces for Togetherness",
       text: "Spacious indoor and outdoor zones make it easy for families and friends to spend time together.",
-      image: "/images/amenities-living.jpg",
+      image: "/images/2.jpg",
     },
     {
       label: "BREATHE",
       title: "Open Green Surroundings",
       text: "Enjoy peaceful outdoor areas and the quieter landscape of Virar East.",
-      image: "/images/amenities-green.jpg",
+      image: "/images/1.jpg",
     },
   ];
 
@@ -133,7 +133,7 @@ const Amenities = () => {
 
             <div className="relative aspect-[4/3] overflow-hidden">
               <img
-                src="/images/amenities-main.jpg"
+                src="/images/1.jpg"
                 alt="Maya Niketan Villa Amenities"
                 className="h-full w-full object-cover"
               />
@@ -249,7 +249,7 @@ const Amenities = () => {
           <div className="relative">
             <div className="aspect-[5/4] overflow-hidden">
               <img
-                src="/images/amenities-pool-feature.jpg"
+                src="/images/10.jpg"
                 alt="Private Pool at Maya Niketan Villa"
                 className="h-full w-full object-cover"
               />

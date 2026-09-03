@@ -734,17 +734,16 @@ const Navbar = () => {
                       sm:px-4
                     "
                   >
-                    <option value="1">1 Guest</option>
-                    <option value="2">2 Guests</option>
-                    <option value="3">3 Guests</option>
-                    <option value="4">4 Guests</option>
-                    <option value="5">5 Guests</option>
-                    <option value="6">6 Guests</option>
-                    <option value="7">7 Guests</option>
-                    <option value="8">8 Guests</option>
-                    <option value="9">9 Guests</option>
-                    <option value="10">10 Guests</option>
-                    <option value="10+">10+ Guests</option>
+                    <option value="1">2 Guest</option>
+                    <option value="2">5 Guests</option>
+                    <option value="3">10 Guests</option>
+                    <option value="4">20 Guests</option>
+                    <option value="5">30 Guests</option>
+                    <option value="6">50 Guests</option>
+                    <option value="7">70 Guests</option>
+                    <option value="9">100 Guests</option>
+                    <option value="10">150 Guests</option>
+                    <option value="10+">200+ Guests</option>
                   </select>
                 </div>
 

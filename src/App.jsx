@@ -1,17 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate, Link } from "react-router-dom";
-
-// =====================================================
-// COMMON COMPONENTS
-// =====================================================
-
 import Navbar from "./components/Navbar";
 import Footer from "./page/Footer";
-
-// =====================================================
-// HOME PAGE SECTIONS
-// =====================================================
-
 import HeroSection from "./page/HeroSection";
 import MayaNiketanSection from "./page/MayaNiketanSection";
 import ImageSection from "./page/ImageSection";
@@ -25,43 +15,24 @@ import NatureSection from "./page/NatureSection";
 import TestimonialsSection from "./page/TestimonialsSection";
 import GallerySection from "./page/GallerySection";
 import ContactSection from "./page/ContactSection";
-
-// =====================================================
-// SEPARATE PAGES
-// =====================================================
-
 import About from "./components/About";
 import Amenities from "./components/Amenities";
 import Location from "./components/Location";
 import Testimonials from "./components/Testimonials";
 import Gallery from "./components/Gallery";
 import Contact from "./components/Contact";
-
-// =====================================================
-// HOME PAGE
-// =====================================================
-
 const Home = () => {
   return (
     <main className="w-full overflow-x-hidden">
       <HeroSection />
-
       <MayaNiketanSection />
-
       <ImageSection />
-
       <LuxuryLiving />
-
       <ClubSection />
-
       <SignatureFeatures />
-
       <LuxuryIntro />
-
       <LocationHighlight />
-
       <LocationMap />
-
       <NatureSection />
 
       <TestimonialsSection />

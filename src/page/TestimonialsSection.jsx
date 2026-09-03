@@ -5,22 +5,22 @@ const TestimonialsSection = () => {
     {
       title: "Experience Maya Niketan Villa",
       subtitle: "A glimpse into your private villa escape.",
-      url: "/videos/testimonial-1.mp4",
+      url: "images/videos/location-video.mp4",
     },
     {
       title: "Poolside Moments",
       subtitle: "Slow afternoons and time well spent together.",
-      url: "/videos/testimonial-2.mp4",
+      url: "images/videos/location-video.mp4",
     },
     {
       title: "Family Time at the Villa",
       subtitle: "More space for the people who matter most.",
-      url: "/videos/testimonial-3.mp4",
+      url: "images/videos/location-video.mp4",
     },
     {
       title: "Celebrate Your Moments",
       subtitle: "A private setting for memorable occasions.",
-      url: "/videos/testimonial-4.mp4",
+      url: "images/videos/location-video.mp4",
     },
   ];
 

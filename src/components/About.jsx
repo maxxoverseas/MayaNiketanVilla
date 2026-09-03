@@ -764,7 +764,7 @@ const About = () => {
 
             <div className="relative aspect-[4/5] overflow-hidden">
               <img
-                src="/images/about-main.jpg"
+                src="/images/10.jpg"
                 alt="Maya Niketan Villa private luxury villa"
                 className="h-full w-full object-cover transition-transform duration-700 hover:scale-[1.03]"
               />
@@ -878,7 +878,7 @@ const About = () => {
           <div className="relative pb-8 sm:pb-10">
             <div className="aspect-[5/4] overflow-hidden">
               <img
-                src="/images/about-nature.jpg"
+                src="/images/10.jpg"
                 alt="Maya Niketan Villa surroundings"
                 className="h-full w-full object-cover"
               />
