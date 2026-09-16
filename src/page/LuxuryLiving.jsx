@@ -2,7 +2,7 @@ import React from "react";
 
 const LuxuryLiving = () => {
   return (
-    <section className="w-full bg-[#263c2a]">
+    <section className="w-full bg-gray-100">
       <div
         className="
           mx-auto
@@ -36,7 +36,7 @@ const LuxuryLiving = () => {
                 text-xs
                 uppercase
                 tracking-[0.22em]
-                text-white/55
+                text-gray-500
                 sm:text-sm
               "
             >
@@ -68,7 +68,7 @@ const LuxuryLiving = () => {
                 text-base
                 font-light
                 leading-[1.85]
-                text-white/85
+                text-gray-700
                 sm:text-lg
                 lg:text-[19px]
               "
@@ -90,7 +90,7 @@ const LuxuryLiving = () => {
                 text-[15px]
                 font-light
                 leading-[1.85]
-                text-white/65
+                text-gray-600
                 sm:text-base
               "
             >
@@ -111,7 +111,7 @@ const LuxuryLiving = () => {
                 text-xs
                 uppercase
                 tracking-[0.14em]
-                text-white/60
+                text-gray-600
                 sm:gap-x-8
               "
             >
@@ -130,7 +130,7 @@ const LuxuryLiving = () => {
             <div className="mt-8 flex items-center gap-3">
               <span className="h-2 w-2 rounded-full bg-[#d4ad72]" />
 
-              <p className="text-xs uppercase tracking-[0.18em] text-white/50">
+              <p className="text-xs uppercase tracking-[0.18em] text-gray-500">
                 Now Open • Bookings Available
               </p>
             </div>
@@ -154,7 +154,7 @@ const LuxuryLiving = () => {
                   transition-all
                   duration-300
                   hover:bg-[#d4ad72]
-                  hover:text-[#263c2a]
+                  hover:text-gray-800
                   sm:px-8
                   sm:py-4
                   sm:text-sm
@@ -201,7 +201,7 @@ const LuxuryLiving = () => {
                   absolute
                   bottom-0
                   left-0
-                  bg-[#263c2a]/90
+                  
                   px-5
                   py-3
                   backdrop-blur-sm
@@ -223,7 +223,7 @@ const LuxuryLiving = () => {
 
             {/* BOTTOM VIDEO TEXT */}
             <div className="mt-4 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-              <p className="font-serif text-base italic text-white/60">
+              <p className="font-serif text-base italic text-gray-600">
                 Your private escape awaits.
               </p>
 
@@ -232,7 +232,7 @@ const LuxuryLiving = () => {
                   text-[10px]
                   uppercase
                   tracking-[0.16em]
-                  text-white/35
+                  text-gray-500
                   sm:text-xs
                 "
               >

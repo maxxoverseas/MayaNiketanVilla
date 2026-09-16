@@ -1,8 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import video1 from "../../public/images/videos/1.mp4";
+import video2 from "../../public/images/videos/1.mp4";
+import video3 from "../../public/images/videos/1.mp4";
+import video4 from "../../public/images/videos/1.mp4";
 
 const HeroSection = () => {
-  const videoRef = useRef(null);
+  const videoRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
+  const [activeVideo, setActiveVideo] = useState(0);
+  const activeVideoRef = useRef(0);
+
+  const videos = [video1, video2, video3, video4];
+
   const lines = [
     {
       text: "Welcome to",
@@ -26,28 +34,32 @@ const HeroSection = () => {
   const [visibleLetters, setVisibleLetters] = useState(0);
   const [isRemoving, setIsRemoving] = useState(false);
 
+  // ==========================================
+  // VIDEO SLIDESHOW
+  // ==========================================
   useEffect(() => {
-    const video = videoRef.current;
+    // Initialize all videos
+    videoRefs.forEach((ref, index) => {
+      const video = ref.current;
+      if (!video) return;
 
-    if (!video) return;
+      video.muted = true;
+      video.defaultMuted = true;
+      video.playsInline = true;
 
-    video.muted = true;
-    video.defaultMuted = true;
-    video.playsInline = true;
-
-    const playVideo = async () => {
-      try {
-        await video.play();
-      } catch (error) {
-        console.log("Video autoplay prevented:", error);
+      if (index === 0) {
+        video.play().catch((error) => {
+          console.log(`Video ${index + 1} autoplay prevented:`, error);
+        });
       }
-    };
-
-    playVideo();
+    });
 
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        playVideo();
+        const currentVideo = videoRefs[activeVideoRef.current]?.current;
+        if (currentVideo) {
+          currentVideo.play().catch(() => {});
+        }
       }
     };
 
@@ -56,6 +68,36 @@ const HeroSection = () => {
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
+  }, []);
+
+  // ==========================================
+  // AUTO SLIDE BETWEEN VIDEOS
+  // ==========================================
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveVideo((prev) => {
+        const next = (prev + 1) % videos.length;
+
+        // Pause current video
+        const currentVideo = videoRefs[prev]?.current;
+        if (currentVideo) {
+          currentVideo.pause();
+          currentVideo.currentTime = 0;
+        }
+
+        // Play next video
+        const nextVideo = videoRefs[next]?.current;
+        if (nextVideo) {
+          nextVideo.currentTime = 0;
+          nextVideo.play().catch(() => {});
+        }
+
+        activeVideoRef.current = next;
+        return next;
+      });
+    }, 3000); // Change slide every 6 seconds
+
+    return () => clearInterval(interval);
   }, []);
 
   // ==========================================
@@ -135,7 +177,7 @@ const HeroSection = () => {
       "
     >
       {/* ==========================================
-          BACKGROUND VIDEO
+          BACKGROUND VIDEO SLIDESHOW
       ========================================== */}
       <div
         className="
@@ -145,24 +187,37 @@ const HeroSection = () => {
           h-screen
           w-full
           overflow-hidden
-
         "
       >
-        <video
-          ref={videoRef}
-          src={video1}
-          // src="https://www.shutterstock.com/shutterstock/videos/4087417863/preview/stock-footage-porto-heli-peloponnese-greece-april-sophisticated-alfresco-arrangement-incorporating.webm"
-          className="
-            h-full
-            w-full
-            object-cover
-          "
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-        />
+        {videos.map((videoSrc, index) => (
+          <div
+            key={index}
+            className={`
+              absolute
+              inset-0
+              transition-opacity
+              duration-[2000ms]
+              ease-in-out
+              ${activeVideo === index ? "opacity-100" : "opacity-0"}
+            `}
+          >
+            <video
+              ref={videoRefs[index]}
+              src={videoSrc}
+              className={`
+                h-full
+                w-full
+                object-cover
+                frame-motion
+              `}
+              autoPlay={index === 0}
+              muted
+              loop
+              playsInline
+              preload="auto"
+            />
+          </div>
+        ))}
 
         {/* Dark cinematic overlay */}
         <div className="absolute inset-0 bg-black/15" />
@@ -196,6 +251,54 @@ const HeroSection = () => {
             sm:w-[450px]
           "
         />
+
+        {/* Slide indicator dots */}
+        <div
+          className="
+            absolute
+            bottom-24
+            left-1/2
+            z-20
+            flex
+            -translate-x-1/2
+            gap-2
+            sm:bottom-28
+          "
+        >
+          {videos.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                const currentVideo = videoRefs[activeVideoRef.current]?.current;
+                if (currentVideo) {
+                  currentVideo.pause();
+                  currentVideo.currentTime = 0;
+                }
+
+                const nextVideo = videoRefs[index]?.current;
+                if (nextVideo) {
+                  nextVideo.currentTime = 0;
+                  nextVideo.play().catch(() => {});
+                }
+
+                setActiveVideo(index);
+                activeVideoRef.current = index;
+              }}
+              className={`
+                h-1.5
+                rounded-full
+                transition-all
+                duration-500
+                ${
+                  activeVideo === index
+                    ? "w-6 bg-[#d4ad72]"
+                    : "w-1.5 bg-white/40 hover:bg-white/70"
+                }
+              `}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
       </div>
 
       {/* ==========================================
@@ -531,6 +634,32 @@ const HeroSection = () => {
         }
 
         /* ----------------------------------------
+           FRAME MOTION (KEN BURNS EFFECT)
+        ---------------------------------------- */
+
+        .frame-motion {
+          animation: frameMotion 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes frameMotion {
+          0% {
+            transform: scale(1) translate(0, 0);
+          }
+          25% {
+            transform: scale(1.08) translate(-1.5%, -1%);
+          }
+          50% {
+            transform: scale(1.05) translate(1%, 1.5%);
+          }
+          75% {
+            transform: scale(1.1) translate(-1%, 0.5%);
+          }
+          100% {
+            transform: scale(1.06) translate(1.5%, -1%);
+          }
+        }
+
+        /* ----------------------------------------
            REDUCED MOTION
         ---------------------------------------- */
 
@@ -540,6 +669,9 @@ const HeroSection = () => {
             opacity: 1;
             transform: none;
             filter: none;
+          }
+          .frame-motion {
+            animation: none;
           }
         }
 

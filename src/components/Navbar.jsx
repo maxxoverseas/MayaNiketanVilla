@@ -170,7 +170,7 @@ const Navbar = () => {
           duration-500
           ${
             scrolled || location.pathname !== "/"
-              ? "bg-[#1f3223]/95 shadow-lg backdrop-blur-md"
+              ? " shadow-lg backdrop-blur-md"
               : "bg-transparent"
           }
         `}
@@ -241,8 +241,8 @@ const Navbar = () => {
 
                     ${
                       isActive
-                        ? "text-[#d4ad72] after:w-full"
-                        : "text-white after:w-0 hover:text-[#d4ad72] hover:after:w-full"
+                        ? "text-[white] after:w-full"
+                        : "text-[#d4ad72] after:w-0 hover:text-[#d4ad72] hover:after:w-full"
                     }
                     `
                   }
@@ -268,7 +268,7 @@ const Navbar = () => {
                 text-xs
                 font-medium
                 tracking-[0.08em]
-                text-[#1f3223]
+                text-gray-800
                 transition-all
                 duration-300
                 hover:bg-transparent
@@ -318,7 +318,7 @@ const Navbar = () => {
           inset-0
           z-[80]
           overflow-y-auto
-          bg-[#1f3223]
+          bg-gray-800
           transition-all
           duration-500
           lg:hidden
@@ -435,7 +435,7 @@ const Navbar = () => {
               font-semibold
               uppercase
               tracking-[0.15em]
-              text-[#1f3223]
+              text-gray-800
               transition
               hover:bg-white
               sm:mt-8
@@ -480,7 +480,7 @@ const Navbar = () => {
               max-w-[720px]
               overflow-y-auto
               rounded-xl
-              bg-[#f7f3ec]
+              bg-gray-100
               p-4
               shadow-2xl
               sm:rounded-2xl
@@ -507,7 +507,7 @@ const Navbar = () => {
                 justify-center
                 text-3xl
                 font-light
-                text-[#263c2a]
+                text-gray-800
                 transition
                 hover:text-[#d4ad72]
                 sm:right-5
@@ -525,7 +525,7 @@ const Navbar = () => {
                 Plan Your Stay
               </p>
 
-              <h2 className="mt-1 font-serif text-2xl leading-tight text-[#263c2a] sm:text-3xl">
+              <h2 className="mt-1 font-serif text-2xl leading-tight text-gray-800 sm:text-3xl">
                 Book Maya Niketan Villa
               </h2>
 
@@ -543,7 +543,7 @@ const Navbar = () => {
                 grid-cols-1
                 gap-3
                 rounded-xl
-                bg-[#263c2a]
+                bg-gray-800
                 p-3
                 text-center
                 sm:mt-7
@@ -589,7 +589,7 @@ const Navbar = () => {
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
                 <div>
-                  <label className="mb-2 block text-xs text-[#8c765c] sm:text-sm">
+                  <label className="mb-2 block text-xs text-gray-600 sm:text-sm">
                     Name
                   </label>
 
@@ -605,7 +605,7 @@ const Navbar = () => {
                       w-full
                       rounded-none
                       border
-                      border-[#d7d0c5]
+                      border-gray-300
                       bg-white
                       px-3
                       text-sm
@@ -619,7 +619,7 @@ const Navbar = () => {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs text-[#8c765c] sm:text-sm">
+                  <label className="mb-2 block text-xs text-gray-600 sm:text-sm">
                     Mobile Number
                   </label>
 
@@ -634,7 +634,7 @@ const Navbar = () => {
                       h-11
                       w-full
                       border
-                      border-[#d7d0c5]
+                      border-gray-300
                       bg-white
                       px-3
                       text-sm
@@ -652,7 +652,7 @@ const Navbar = () => {
 
               <div className="mt-4 grid grid-cols-1 gap-4 md:mt-5 md:grid-cols-2 md:gap-5">
                 <div>
-                  <label className="mb-2 block text-xs text-[#8c765c] sm:text-sm">
+                  <label className="mb-2 block text-xs text-gray-600 sm:text-sm">
                     Check-In Date
                   </label>
 
@@ -667,7 +667,7 @@ const Navbar = () => {
                       h-11
                       w-full
                       border
-                      border-[#d7d0c5]
+                      border-gray-300
                       bg-white
                       px-3
                       text-sm
@@ -680,7 +680,7 @@ const Navbar = () => {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs text-[#8c765c] sm:text-sm">
+                  <label className="mb-2 block text-xs text-gray-600 sm:text-sm">
                     Check-Out Date
                   </label>
 
@@ -695,7 +695,7 @@ const Navbar = () => {
                       h-11
                       w-full
                       border
-                      border-[#d7d0c5]
+                      border-gray-300
                       bg-white
                       px-3
                       text-sm
@@ -712,7 +712,7 @@ const Navbar = () => {
 
               <div className="mt-4 grid grid-cols-1 gap-4 md:mt-5 md:grid-cols-2 md:gap-5">
                 <div>
-                  <label className="mb-2 block text-xs text-[#8c765c] sm:text-sm">
+                  <label className="mb-2 block text-xs text-gray-600 sm:text-sm">
                     Number of Guests
                   </label>
 
@@ -724,7 +724,7 @@ const Navbar = () => {
                       h-11
                       w-full
                       border
-                      border-[#d7d0c5]
+                      border-gray-300
                       bg-white
                       px-3
                       text-sm
@@ -748,7 +748,7 @@ const Navbar = () => {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs text-[#8c765c] sm:text-sm">
+                  <label className="mb-2 block text-xs text-gray-600 sm:text-sm">
                     Booking For
                   </label>
 
@@ -760,7 +760,7 @@ const Navbar = () => {
                       h-11
                       w-full
                       border
-                      border-[#d7d0c5]
+                      border-gray-300
                       bg-white
                       px-3
                       text-sm
@@ -799,7 +799,7 @@ const Navbar = () => {
                   mt-5
                   h-12
                   w-full
-                  bg-[#263c2a]
+                  bg-gray-800
                   px-4
                   text-xs
                   font-semibold
@@ -809,7 +809,7 @@ const Navbar = () => {
                   transition-all
                   duration-300
                   hover:bg-[#d4ad72]
-                  hover:text-[#263c2a]
+                  hover:text-gray-800
                   sm:mt-7
                   sm:h-14
                   sm:text-sm

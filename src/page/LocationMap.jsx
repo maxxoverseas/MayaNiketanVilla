@@ -33,84 +33,74 @@ const LocationMap = () => {
   ];
 
   return (
-    <section className="w-full bg-[#263c2a] py-16 md:py-20 lg:py-24">
-      <div className="mx-auto max-w-[1650px] px-5 sm:px-8 lg:px-14 xl:px-20">
-        {/* TOP CONTENT */}
-        <div className="mx-auto mb-11 max-w-4xl text-center">
-          <p className="mb-4 text-xs uppercase tracking-[0.22em] text-white/45 sm:text-sm">
-            Location & Directions
-          </p>
+    <section className="relative w-full overflow-hidden bg-[#f8f6f1] py-20 text-[#0e382b] md:py-24 lg:py-28">
+      {/* SOFT AMBIENT GLOWS */}
+      <div className="pointer-events-none absolute -left-32 top-10 h-96 w-96 rounded-full bg-[#0e382b]/5 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-32 bottom-10 h-96 w-96 rounded-full bg-[#9e793e]/15 blur-[120px]" />
 
-          <h2 className="font-serif text-3xl italic leading-tight text-[#d4ad72] md:text-4xl lg:text-[42px]">
-            Find Maya Niketan Villa
+      <div className="relative mx-auto max-w-[1650px] px-5 sm:px-8 lg:px-14 xl:px-20">
+        {/* TOP CONTENT */}
+        <div className="mx-auto mb-14 max-w-4xl text-center">
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-[#0e382b]/15 bg-[#0e382b]/5 px-4 py-1.5 backdrop-blur-md">
+            <span className="h-2 w-2 rounded-full bg-[#0e382b] animate-pulse" />
+            <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#0e382b]">
+              Location & Directions
+            </span>
+          </div>
+
+          <h2 className="mt-6 font-serif text-3xl font-light leading-tight text-[#0e382b] sm:text-4xl md:text-5xl lg:text-[50px]">
+            Find{" "}
+            <span className="italic text-[#9e793e]">Maya Niketan Villa</span>
           </h2>
 
-          <div className="mx-auto mt-6 h-[1px] w-20 bg-[#d4ad72]" />
+          <div className="mx-auto mt-6 h-[2px] w-20 bg-[#9e793e]" />
 
-          <p className="mx-auto mt-7 max-w-3xl text-base font-light leading-[1.8] text-white/80 md:text-lg">
+          <p className="mx-auto mt-7 max-w-3xl text-base font-light leading-relaxed text-[#0e382b]/80 md:text-lg">
             Your private 6BHK luxury pool villa in Virar East, conveniently
             located along Kaner–Dahisar Road in the Vasai–Virar region.
           </p>
 
-          <p className="mx-auto mt-4 max-w-4xl text-sm font-light leading-7 text-white/55 sm:text-base">
+          <p className="mx-auto mt-3 max-w-4xl text-sm font-light leading-relaxed text-[#0e382b]/60 sm:text-base">
             Plot No. 114–117, near Mahakali Temple & Amul Virar Dairy,
             Kaner–Dahisar Road, Vasai–Virar, Maharashtra 401303, India
           </p>
         </div>
 
-        {/* MAP */}
-        <div className="relative overflow-hidden bg-white shadow-2xl">
+        {/* MAP CONTAINER */}
+        <div className="relative overflow-hidden rounded-2xl border border-[#0e382b]/10 bg-white shadow-xl backdrop-blur-md transition-all duration-500 hover:border-[#9e793e]/40 hover:shadow-2xl">
           <iframe
             title="Maya Niketan Villa Location"
             src="https://www.google.com/maps?q=19.4898127,72.8642998&z=16&output=embed"
-            className="
-              h-[350px]
-              w-full
-              border-0
-              sm:h-[400px]
-              md:h-[450px]
-              lg:h-[500px]
-            "
+            className="h-[380px] w-full border-0 sm:h-[420px] md:h-[480px] lg:h-[520px]"
             loading="lazy"
             allowFullScreen
             referrerPolicy="no-referrer-when-downgrade"
           />
 
           {/* DESKTOP LOCATION CARD */}
-          <div
-            className="
-              absolute
-              left-5
-              top-5
-              hidden
-              w-[340px]
-              bg-white/95
-              p-6
-              shadow-2xl
-              backdrop-blur-md
-              md:block
-            "
-          >
+          <div className="absolute left-6 top-6 hidden w-[350px] rounded-xl border border-[#0e382b]/10 bg-[#0e382b] p-6 text-white shadow-2xl backdrop-blur-xl md:block">
             {/* STATUS */}
             <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#71805d]" />
-
-              <p className="text-[10px] uppercase tracking-[0.18em] text-[#70766e]">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+              </span>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#d4ad72]">
                 Now Open • Bookings Available
               </p>
             </div>
 
-            <h3 className="mt-4 font-serif text-2xl italic text-[#263c2a]">
+            <h3 className="mt-4 font-serif text-2xl font-medium text-white">
               Maya Niketan Villa
             </h3>
 
-            <p className="mt-2 text-[11px] uppercase tracking-[0.15em] text-[#a1845d]">
+            <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.18em] text-[#d4ad72]/90">
               6BHK Luxury Pool Villa
             </p>
 
-            <div className="mt-4 h-[1px] w-12 bg-[#b9925f]" />
+            <div className="mt-4 h-[1px] w-12 bg-[#d4ad72]/40" />
 
-            <p className="mt-4 text-sm leading-6 text-gray-600">
+            <p className="mt-4 text-xs font-light leading-relaxed text-white/80">
               Plot No. 114–117, near Mahakali Temple & Amul Virar Dairy,
               Kaner–Dahisar Road, Vasai–Virar, Maharashtra 401303.
             </p>
@@ -119,176 +109,96 @@ const LocationMap = () => {
               href={googleMapsLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="
-                mt-5
-                inline-flex
-                items-center
-                gap-2
-                border-b
-                border-[#b9925f]
-                pb-1
-                text-sm
-                font-medium
-                text-[#263c2a]
-                transition-colors
-                duration-300
-                hover:text-[#b9925f]
-              "
+              className="mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#d4ad72] transition-colors duration-300 hover:text-white"
             >
               Get Directions
-              <span>↗</span>
+              <span className="text-sm">↗</span>
             </a>
           </div>
 
           {/* MAP BADGE */}
-          <div className="absolute bottom-4 right-4 hidden bg-[#263c2a]/90 px-4 py-2.5 backdrop-blur-md sm:block">
-            <p className="text-[10px] uppercase tracking-[0.17em] text-[#d4ad72]">
+          <div className="absolute bottom-5 right-5 hidden rounded-lg border border-[#0e382b]/10 bg-[#0e382b] px-4 py-2.5 shadow-md sm:block">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#d4ad72]">
               Virar East • Maharashtra
             </p>
           </div>
         </div>
 
         {/* MOBILE LOCATION CARD */}
-        <div className="mt-4 border border-white/10 bg-white/5 p-5 md:hidden">
+        <div className="mt-5 rounded-xl border border-[#0e382b]/10 bg-white p-6 shadow-md md:hidden">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-[#d4ad72]" />
-
-            <p className="text-[10px] uppercase tracking-[0.17em] text-white/45">
+            <span className="h-2 w-2 rounded-full bg-emerald-600" />
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9e793e]">
               Now Open • Bookings Available
             </p>
           </div>
 
-          <h3 className="mt-4 font-serif text-xl italic text-[#d4ad72]">
+          <h3 className="mt-3 font-serif text-2xl font-medium text-[#0e382b]">
             Maya Niketan Villa
           </h3>
 
-          <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-white/40">
+          <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#9e793e]">
             6BHK Luxury Pool Villa
           </p>
 
-          <p className="mt-4 text-sm font-light leading-6 text-white/60">
+          <p className="mt-4 text-xs font-light leading-relaxed text-[#0e382b]/70">
             Plot No. 114–117, near Mahakali Temple & Amul Virar Dairy,
             Kaner–Dahisar Road, Vasai–Virar, Maharashtra 401303, India
           </p>
         </div>
 
         {/* ACTION BUTTONS */}
-        <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
           {/* GOOGLE MAPS */}
           <a
             href={googleMapsLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="
-              inline-flex
-              w-full
-              items-center
-              justify-center
-              gap-3
-              border
-              border-[#d4ad72]
-              px-7
-              py-3.5
-              text-xs
-              uppercase
-              tracking-[0.16em]
-              text-[#d4ad72]
-              transition-all
-              duration-300
-              hover:bg-[#d4ad72]
-              hover:text-[#263c2a]
-              sm:w-auto
-            "
+            className="inline-flex w-full items-center justify-center gap-2.5 rounded-lg border border-[#0e382b] bg-transparent px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.16em] text-[#0e382b] transition-all duration-300 hover:bg-[#0e382b] hover:text-white hover:shadow-lg sm:w-auto"
           >
             Get Directions
-            <span className="text-base">↗</span>
+            <span className="text-sm">↗</span>
           </a>
 
           {/* BOOK NOW */}
           <a
             href="/contact"
-            className="
-              inline-flex
-              w-full
-              items-center
-              justify-center
-              bg-[#d4ad72]
-              px-7
-              py-3.5
-              text-xs
-              uppercase
-              tracking-[0.16em]
-              text-[#263c2a]
-              transition-all
-              duration-300
-              hover:bg-white
-              sm:w-auto
-            "
+            className="inline-flex w-full items-center justify-center rounded-lg bg-[#0e382b] px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-lg transition-all duration-300 hover:bg-[#9e793e] hover:text-white sm:w-auto"
           >
             Book Your Stay
           </a>
         </div>
 
         {/* LOCATION HIGHLIGHTS */}
-        <div className="mt-14 border-t border-white/10 pt-10">
-          <div className="mb-9 text-center">
-            <p className="text-[10px] uppercase tracking-[0.2em] text-white/35 sm:text-xs">
+        <div className="mt-16 border-t border-[#0e382b]/10 pt-12">
+          <div className="mb-10 text-center">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#9e793e]">
               Getting Here
             </p>
 
-            <h3 className="mt-3 font-serif text-xl italic text-[#d4ad72] md:text-2xl">
+            <h3 className="mt-2 font-serif text-2xl font-light text-[#0e382b] md:text-3xl">
               Location Highlights
             </h3>
           </div>
 
-          <div
-            className="
-              grid
-              grid-cols-2
-              gap-x-5
-              gap-y-9
-              sm:grid-cols-3
-              lg:grid-cols-5
-            "
-          >
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {locationHighlights.map((location, index) => (
               <div
                 key={index}
-                className="group flex flex-col items-center text-center"
+                className="group flex flex-col items-center rounded-xl border border-[#0e382b]/10 bg-white p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#0e382b]/30 hover:shadow-md"
               >
                 {/* ICON */}
-                <div
-                  className="
-                    mb-4
-                    flex
-                    h-14
-                    w-14
-                    items-center
-                    justify-center
-                    rounded-full
-                    border
-                    border-[#d4ad72]/25
-                    bg-white/5
-                    text-2xl
-                    transition-all
-                    duration-300
-                    group-hover:-translate-y-1
-                    group-hover:border-[#d4ad72]/60
-                    group-hover:bg-white/10
-                    sm:h-16
-                    sm:w-16
-                  "
-                >
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-[#0e382b]/10 bg-[#0e382b]/5 text-2xl transition-colors duration-300 group-hover:border-[#0e382b] group-hover:bg-[#0e382b] group-hover:text-white sm:h-16 sm:w-16">
                   {location.icon}
                 </div>
 
                 {/* LABEL */}
-                <p className="text-[9px] uppercase tracking-[0.17em] text-[#d4ad72]/60 sm:text-[10px]">
+                <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#9e793e] sm:text-[10px]">
                   {location.label}
                 </p>
 
                 {/* NAME */}
-                <h4 className="mt-2 font-serif text-base text-white sm:text-lg">
+                <h4 className="mt-2 font-serif text-base font-medium text-[#0e382b] sm:text-lg">
                   {location.name}
                 </h4>
               </div>
@@ -297,39 +207,42 @@ const LocationMap = () => {
         </div>
 
         {/* PROPERTY INFO STRIP */}
-        <div className="mt-14 grid grid-cols-1 border-y border-white/10 py-6 sm:grid-cols-3">
-          <div className="py-3 text-center sm:border-r sm:border-white/10">
-            <p className="font-serif text-xl text-[#d4ad72]">6BHK</p>
-
-            <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-white/35 sm:text-xs">
+        <div className="mt-16 grid grid-cols-1 divide-y divide-[#0e382b]/10 rounded-2xl border border-[#0e382b]/10 bg-white py-4 shadow-sm sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+          <div className="py-4 text-center">
+            <p className="font-serif text-xl font-medium text-[#0e382b]">
+              6BHK
+            </p>
+            <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.18em] text-[#0e382b]/60">
               Private Villa
             </p>
           </div>
 
-          <div className="py-3 text-center sm:border-r sm:border-white/10">
-            <p className="font-serif text-xl text-[#d4ad72]">Private Pool</p>
-
-            <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-white/35 sm:text-xs">
+          <div className="py-4 text-center">
+            <p className="font-serif text-xl font-medium text-[#0e382b]">
+              Private Pool
+            </p>
+            <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.18em] text-[#0e382b]/60">
               Relax & Unwind
             </p>
           </div>
 
-          <div className="py-3 text-center">
-            <p className="font-serif text-xl text-[#d4ad72]">Virar East</p>
-
-            <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-white/35 sm:text-xs">
+          <div className="py-4 text-center">
+            <p className="font-serif text-xl font-medium text-[#0e382b]">
+              Virar East
+            </p>
+            <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.18em] text-[#0e382b]/60">
               Palghar • Maharashtra
             </p>
           </div>
         </div>
 
         {/* BOTTOM MESSAGE */}
-        <div className="mx-auto mt-10 max-w-3xl text-center">
-          <p className="font-serif text-lg italic text-[#d4ad72] md:text-xl">
+        <div className="mx-auto mt-12 max-w-3xl text-center">
+          <p className="font-serif text-lg italic text-[#9e793e] md:text-xl">
             Your getaway is just a route away.
           </p>
 
-          <p className="mx-auto mt-3 max-w-2xl text-xs font-light leading-6 text-white/35 sm:text-sm">
+          <p className="mx-auto mt-2 max-w-2xl text-xs font-light leading-relaxed text-[#0e382b]/60 sm:text-sm">
             Use Google Maps for live directions and the most accurate route to
             Maya Niketan Villa.
           </p>
