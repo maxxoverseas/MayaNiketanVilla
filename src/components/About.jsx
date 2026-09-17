@@ -115,7 +115,7 @@ const About = () => {
             {/* CTA BUTTONS */}
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <a
-                href="#booking"
+                href="contact"
                 className="inline-flex h-14 items-center justify-center rounded-sm bg-slate-900 px-8 text-xs font-bold uppercase tracking-[0.2em] text-white shadow-lg transition-all duration-300 hover:bg-[#bd8c50] hover:shadow-xl"
               >
                 Book Your Stay
@@ -295,7 +295,7 @@ const About = () => {
             </div>
 
             <a
-              href="#booking"
+              href="contact"
               className="mt-10 inline-flex h-12 items-center justify-center rounded-sm bg-slate-900 px-8 text-xs font-semibold uppercase tracking-[0.2em] text-white transition-all duration-300 hover:bg-[#bd8c50] hover:text-white shadow-md hover:shadow-lg"
             >
               Check Availability
@@ -419,14 +419,14 @@ const About = () => {
 
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                   <a
-                    href="#contact"
+                    href="contact"
                     className="inline-flex h-12 items-center justify-center rounded-sm bg-slate-900 px-8 text-xs font-semibold uppercase tracking-[0.2em] text-white transition-all duration-300 hover:bg-[#bd8c50] shadow-md hover:shadow-lg"
                   >
                     Book Your Stay
                   </a>
 
                   <a
-                    href="https://www.google.com/maps/place/Maya+Niketan+Villa/@19.4897909,72.8643073,16z"
+                    href="https://www.google.com/maps/place/Maya+Niketan+Villa/@19.4897909,72.8643073,16z/data=!4m14!1m7!3m6!1s0x3be7a9bf8090607b:0x128c7626e4b677db!2sMaya+Niketan+Villa!8m2!3d19.4898127!4d72.8642998!16s%2Fg%2F11yzty7nfk!3m5!1s0x3be7a9bf8090607b:0x128c7626e4b677db!8m2!3d19.4898127!4d72.8642998!16s%2Fg%2F11yzty7nfk?entry=ttu&g_ep=EgoyMDI2MDkxMy4wIKXMDSoASAFQAw%3D%3D"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex h-12 items-center justify-center rounded-sm border border-slate-300 px-8 text-xs font-medium uppercase tracking-[0.2em] text-slate-800 transition-all duration-300 hover:border-[#bd8c50] hover:text-[#bd8c50] hover:bg-[#FAF8F5]"
@@ -487,7 +487,7 @@ const About = () => {
           </p>
 
           <a
-            href="#contact"
+            href="contact"
             className="mt-10 inline-flex h-14 items-center justify-center rounded-sm bg-slate-900 px-10 text-xs font-bold uppercase tracking-[0.2em] text-white shadow-lg transition-all duration-300 hover:bg-[#bd8c50] hover:shadow-xl"
           >
             Book Maya Niketan

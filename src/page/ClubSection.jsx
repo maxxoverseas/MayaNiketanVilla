@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 
 const ClubSection = () => {
+  // Adjust this to your navbar's real rendered height (in px) so the fixed
+  // gallery image stops exactly ~10px below the navbar with no gap or overlap.
+  const NAVBAR_OFFSET = 104;
+
   const images = [
     "/images/2.jpg",
     "/images/1.jpg",
@@ -28,6 +32,12 @@ const ClubSection = () => {
   const [inView, setInView] = useState(false);
   const sectionRef = useRef(null);
 
+  // REFS FOR THE JS-DRIVEN FIXED GALLERY
+  const columnRef = useRef(null); // tall outer column (matches text column height)
+  const galleryRef = useRef(null); // the actual visual gallery block being pinned
+  const [galleryStyle, setGalleryStyle] = useState({ position: "static" });
+
+  // AUTO SLIDER — PAUSES ON HOVER / FOCUS
   useEffect(() => {
     if (isPaused) return;
     const slider = setInterval(() => {
@@ -36,6 +46,7 @@ const ClubSection = () => {
     return () => clearInterval(slider);
   }, [images.length, isPaused]);
 
+  // ONE-TIME SCROLL REVEAL FOR THE WHOLE SECTION
   useEffect(() => {
     const node = sectionRef.current;
     if (!node) return;
@@ -51,6 +62,46 @@ const ClubSection = () => {
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
+
+  // JS-DRIVEN "FIXED WHILE SCROLLING THROUGH THE TEXT COLUMN" BEHAVIOR.
+  // Does not rely on CSS position:sticky, so it can't be broken by an
+  // overflow/transform/filter set on some ancestor elsewhere in the page.
+  useEffect(() => {
+    const updatePosition = () => {
+      const column = columnRef.current;
+      const gallery = galleryRef.current;
+      if (!column || !gallery) return;
+
+      if (window.innerWidth < 1024) {
+        setGalleryStyle({ position: "static" });
+        return;
+      }
+
+      const columnRect = column.getBoundingClientRect();
+      const galleryHeight = gallery.offsetHeight;
+
+      if (columnRect.top > NAVBAR_OFFSET) {
+        setGalleryStyle({ position: "static" });
+      } else if (columnRect.bottom < NAVBAR_OFFSET + galleryHeight) {
+        setGalleryStyle({ position: "absolute", left: 0, right: 0, bottom: 0 });
+      } else {
+        setGalleryStyle({
+          position: "fixed",
+          top: NAVBAR_OFFSET,
+          left: columnRect.left,
+          width: columnRect.width,
+        });
+      }
+    };
+
+    updatePosition();
+    window.addEventListener("scroll", updatePosition, { passive: true });
+    window.addEventListener("resize", updatePosition);
+    return () => {
+      window.removeEventListener("scroll", updatePosition);
+      window.removeEventListener("resize", updatePosition);
+    };
+  }, [NAVBAR_OFFSET]);
 
   const nextSlide = () => {
     setActiveIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
@@ -102,9 +153,9 @@ const ClubSection = () => {
           </div>
         </div>
 
-        {/* MAIN CONTENT — STICKY GALLERY */}
-        <div className="relative grid grid-cols-1 items-start gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-20">
-          {/* LEFT SIDE FEATURES (SCROLLING) */}
+        {/* MAIN CONTENT */}
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-20">
+          {/* LEFT SIDE FEATURES (SCROLLS NORMALLY) */}
           <div
             className={`
               w-full transition-all duration-700 ease-out
@@ -170,7 +221,7 @@ const ClubSection = () => {
               </div>
             </div>
 
-            {/* ⭐ EXTRA CONTENT — taaki left side lamba ho aur sticky effect dikhe */}
+            {/* EXTRA CONTENT — taaki left side lamba ho aur pin/release effect dikhe */}
             <div className="mt-10 space-y-6 border-t border-[#b9925f]/20 pt-8">
               <div>
                 <h3 className="font-serif text-xl italic text-[#8c704d] sm:text-2xl">
@@ -208,143 +259,148 @@ const ClubSection = () => {
             </div>
           </div>
 
-          {/* ⭐ RIGHT SIDE GALLERY — STICKY ON DESKTOP */}
+          {/* RIGHT SIDE GALLERY — OUTER COLUMN STRETCHES TO MATCH THE TEXT COLUMN'S HEIGHT
+              (columnRef). THE INNER GALLERY BLOCK (galleryRef) IS POSITIONED VIA JS —
+              static → fixed (pinned ~10px below navbar) → absolute-bottom (released
+              into the next section as the text column ends). */}
           <div
+            ref={columnRef}
             className={`
-              w-full transition-all duration-700 ease-out
-              lg:sticky lg:top-[96px] lg:self-start
-              ${
-                inView ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
-              }
+              relative w-full transition-opacity duration-700 ease-out
+              ${inView ? "opacity-100" : "opacity-0"}
             `}
-            style={{ transitionDelay: inView ? "220ms" : "0ms" }}
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
           >
-            {/* MAIN IMAGE */}
-            <div className="relative overflow-hidden rounded-sm bg-[#eae6dd] shadow-xl">
-              <div className="relative aspect-[4/3] w-full sm:aspect-[16/10]">
+            <div
+              ref={galleryRef}
+              style={galleryStyle}
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
+            >
+              {/* MAIN IMAGE */}
+              <div className="relative overflow-hidden rounded-sm bg-[#eae6dd] shadow-xl">
+                <div className="relative aspect-[4/3] w-full sm:aspect-[16/10]">
+                  {images.map((image, index) => (
+                    <img
+                      key={image}
+                      src={image}
+                      alt={`Maya Niketan Villa view ${index + 1}`}
+                      className={`
+                        absolute inset-0 h-full w-full object-cover
+                        transition-all duration-700
+                        ${
+                          activeIndex === index
+                            ? "scale-100 opacity-100"
+                            : "scale-105 opacity-0"
+                        }
+                      `}
+                    />
+                  ))}
+                </div>
+
+                <div className="pointer-events-none absolute inset-0 bg-black/5" />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/40 to-transparent" />
+
+                <div className="absolute bottom-4 left-4 sm:bottom-5 sm:left-5">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-white/70 sm:text-xs">
+                    Maya Niketan Villa
+                  </p>
+                  <p className="mt-1 font-serif text-base italic text-white sm:text-lg md:text-xl">
+                    Your private getaway in Virar East
+                  </p>
+                </div>
+
+                <div
+                  className="absolute right-4 top-4 bg-black/30 px-3 py-2 backdrop-blur-sm"
+                  aria-live="polite"
+                >
+                  <p className="text-[10px] tracking-[0.14em] text-white sm:text-xs">
+                    {String(activeIndex + 1).padStart(2, "0")} /{" "}
+                    {String(images.length).padStart(2, "0")}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={prevSlide}
+                  aria-label="Previous image"
+                  className="
+                    absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center
+                    rounded-full bg-white/90 text-xl text-[#263c2a] shadow-md backdrop-blur-sm
+                    transition-all duration-300 hover:scale-105 hover:bg-white
+                    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b9925f]
+                    sm:left-3 md:h-12 md:w-12 md:text-2xl
+                  "
+                >
+                  ‹
+                </button>
+
+                <button
+                  type="button"
+                  onClick={nextSlide}
+                  aria-label="Next image"
+                  className="
+                    absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center
+                    rounded-full bg-white/90 text-xl text-[#263c2a] shadow-md backdrop-blur-sm
+                    transition-all duration-300 hover:scale-105 hover:bg-white
+                    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b9925f]
+                    sm:right-3 md:h-12 md:w-12 md:text-2xl
+                  "
+                >
+                  ›
+                </button>
+              </div>
+
+              {/* THUMBNAILS */}
+              <div className="mt-3 grid grid-cols-4 gap-2 md:gap-3">
                 {images.map((image, index) => (
-                  <img
+                  <button
+                    type="button"
                     key={image}
-                    src={image}
-                    alt={`Maya Niketan Villa view ${index + 1}`}
+                    onClick={() => setActiveIndex(index)}
+                    aria-label={`View Maya Niketan Villa image ${index + 1}`}
                     className={`
-                      absolute inset-0 h-full w-full object-cover
-                      transition-all duration-700
+                      relative aspect-[4/2.6] overflow-hidden border transition-all duration-300
+                      focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b9925f]
                       ${
                         activeIndex === index
-                          ? "scale-100 opacity-100"
-                          : "scale-105 opacity-0"
+                          ? "border-[#b9925f] opacity-100"
+                          : "border-transparent opacity-50 hover:opacity-100"
                       }
                     `}
-                  />
+                  >
+                    <img
+                      src={image}
+                      alt={`Maya Niketan Villa preview ${index + 1}`}
+                      className="h-full w-full object-cover"
+                    />
+                    {activeIndex === index && (
+                      <div className="absolute bottom-0 left-0 h-[2px] w-full bg-[#b9925f]" />
+                    )}
+                  </button>
                 ))}
               </div>
 
-              <div className="pointer-events-none absolute inset-0 bg-black/5" />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/40 to-transparent" />
-
-              <div className="absolute bottom-4 left-4 sm:bottom-5 sm:left-5">
-                <p className="text-[10px] uppercase tracking-[0.2em] text-white/70 sm:text-xs">
-                  Maya Niketan Villa
-                </p>
-                <p className="mt-1 font-serif text-base italic text-white sm:text-lg md:text-xl">
-                  Your private getaway in Virar East
-                </p>
-              </div>
-
-              <div
-                className="absolute right-4 top-4 bg-black/30 px-3 py-2 backdrop-blur-sm"
-                aria-live="polite"
-              >
-                <p className="text-[10px] tracking-[0.14em] text-white sm:text-xs">
-                  {String(activeIndex + 1).padStart(2, "0")} /{" "}
-                  {String(images.length).padStart(2, "0")}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={prevSlide}
-                aria-label="Previous image"
-                className="
-                  absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center
-                  rounded-full bg-white/90 text-xl text-[#263c2a] shadow-md backdrop-blur-sm
-                  transition-all duration-300 hover:scale-105 hover:bg-white
-                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b9925f]
-                  sm:left-3 md:h-12 md:w-12 md:text-2xl
-                "
-              >
-                ‹
-              </button>
-
-              <button
-                type="button"
-                onClick={nextSlide}
-                aria-label="Next image"
-                className="
-                  absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center
-                  rounded-full bg-white/90 text-xl text-[#263c2a] shadow-md backdrop-blur-sm
-                  transition-all duration-300 hover:scale-105 hover:bg-white
-                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b9925f]
-                  sm:right-3 md:h-12 md:w-12 md:text-2xl
-                "
-              >
-                ›
-              </button>
-            </div>
-
-            {/* THUMBNAILS */}
-            <div className="mt-3 grid grid-cols-4 gap-2 md:gap-3">
-              {images.map((image, index) => (
-                <button
-                  type="button"
-                  key={image}
-                  onClick={() => setActiveIndex(index)}
-                  aria-label={`View Maya Niketan Villa image ${index + 1}`}
-                  className={`
-                    relative aspect-[4/2.6] overflow-hidden border transition-all duration-300
-                    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b9925f]
-                    ${
-                      activeIndex === index
-                        ? "border-[#b9925f] opacity-100"
-                        : "border-transparent opacity-50 hover:opacity-100"
-                    }
-                  `}
+              {/* GALLERY BOTTOM */}
+              <div className="mt-5 flex flex-col gap-3 border-t border-[#b9925f]/20 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-serif text-base italic text-[#8c704d] sm:text-lg">
+                    Come for the stay. Stay for the moments.
+                  </p>
+                  <p className="mt-1 text-xs text-[#858982]">
+                    6BHK Luxury Pool Villa • Virar East
+                  </p>
+                </div>
+                <a
+                  href="/contact"
+                  className="
+                    inline-flex w-fit items-center justify-center border border-[#263c2a]
+                    px-5 py-2.5 text-[10px] uppercase tracking-[0.16em] text-[#263c2a]
+                    transition-all duration-300 hover:bg-[#263c2a] hover:text-white sm:text-xs
+                  "
                 >
-                  <img
-                    src={image}
-                    alt={`Maya Niketan Villa preview ${index + 1}`}
-                    className="h-full w-full object-cover"
-                  />
-                  {activeIndex === index && (
-                    <div className="absolute bottom-0 left-0 h-[2px] w-full bg-[#b9925f]" />
-                  )}
-                </button>
-              ))}
-            </div>
-
-            {/* GALLERY BOTTOM */}
-            <div className="mt-5 flex flex-col gap-3 border-t border-[#b9925f]/20 pt-5 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="font-serif text-base italic text-[#8c704d] sm:text-lg">
-                  Come for the stay. Stay for the moments.
-                </p>
-                <p className="mt-1 text-xs text-[#858982]">
-                  6BHK Luxury Pool Villa • Virar East
-                </p>
+                  Book Your Stay
+                </a>
               </div>
-              <a
-                href="/contact"
-                className="
-                  inline-flex w-fit items-center justify-center border border-[#263c2a]
-                  px-5 py-2.5 text-[10px] uppercase tracking-[0.16em] text-[#263c2a]
-                  transition-all duration-300 hover:bg-[#263c2a] hover:text-white sm:text-xs
-                "
-              >
-                Book Your Stay
-              </a>
             </div>
           </div>
         </div>

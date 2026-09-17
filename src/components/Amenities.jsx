@@ -399,7 +399,7 @@ const Amenities = () => {
           </p>
 
           <a
-            href="#contact"
+            href="contact"
             className="mt-10 inline-flex h-14 items-center justify-center rounded-sm bg-slate-900 px-10 text-xs font-bold uppercase tracking-[0.2em] text-white shadow-lg transition-all duration-300 hover:bg-[#bd8c50] hover:shadow-xl"
           >
             Enquire Now
