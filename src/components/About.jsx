@@ -43,23 +43,23 @@ const About = () => {
     },
   ];
 
-  const nearbyPlaces = [
-    {
-      title: "Tungareshwar",
-      subtitle: "Nature & Hills",
-      text: "Explore the greener side of the Vasai–Virar region with its hills, trekking routes and seasonal landscapes.",
-    },
-    {
-      title: "Jivdani Temple",
-      subtitle: "Virar Landmark",
-      text: "One of Virar's most recognised spiritual landmarks located on Jivdani Hill.",
-    },
-    {
-      title: "Kaner–Dahisar Belt",
-      subtitle: "Peaceful Surroundings",
-      text: "A quieter side of the region with more open surroundings and a relaxed atmosphere away from crowded city areas.",
-    },
-  ];
+  // const nearbyPlaces = [
+  //   {
+  //     title: "Tungareshwar",
+  //     subtitle: "Nature & Hills",
+  //     text: "Explore the greener side of the Vasai–Virar region with its hills, trekking routes and seasonal landscapes.",
+  //   },
+  //   {
+  //     title: "Jivdani Temple",
+  //     subtitle: "Virar Landmark",
+  //     text: "One of Virar's most recognised spiritual landmarks located on Jivdani Hill.",
+  //   },
+  //   {
+  //     title: "Kaner–Dahisar Belt",
+  //     subtitle: "Peaceful Surroundings",
+  //     text: "A quieter side of the region with more open surroundings and a relaxed atmosphere away from crowded city areas.",
+  //   },
+  // ];
 
   return (
     <main
@@ -351,7 +351,7 @@ const About = () => {
       {/* =====================================================
           LOCATION / NEARBY PLACES
       ===================================================== */}
-      <section className="bg-[#FAF8F5] py-20 text-slate-900 lg:py-28">
+      {/*---- <section className="bg-[#FAF8F5] py-20 text-slate-900 lg:py-28">
         <div className="mx-auto max-w-7xl px-6 lg:px-12">
           <div className="text-center">
             <p className="font-serif text-lg italic text-[#bd8c50]">
@@ -388,7 +388,7 @@ const About = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> ==*/}
 
       {/* =====================================================
           BOOKING / MAP LOCATION
