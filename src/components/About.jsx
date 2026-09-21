@@ -1,504 +1,722 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Award,
+  Heart,
+  Users,
+  Sparkles,
+  Leaf,
+  Shield,
+  Star,
+  Quote,
+  ArrowRight,
+  MapPin,
+  Calendar,
+  CheckCircle2,
+} from "lucide-react";
 
 const About = () => {
-  const experienceCards = [
+  const [inView, setInView] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+    },
+  };
+
+  const values = [
     {
-      number: "01",
-      title: "Private 6BHK Villa",
-      text: "A spacious private villa created for families, friends, celebrations and relaxing stays together.",
+      icon: Heart,
+      title: "Warm Hospitality",
+      description:
+        "Every guest is welcomed like family. We believe true luxury lies in the personal touch, genuine care, and attention to detail that makes you feel at home.",
     },
     {
-      number: "02",
-      title: "Private Pool",
-      text: "Enjoy relaxed poolside moments, celebrations and peaceful time away from the everyday routine.",
+      icon: Shield,
+      title: "Complete Privacy",
+      description:
+        "Your time is yours alone. The entire villa is exclusively yours during your stay — no shared spaces, no interruptions, just uninterrupted moments with your loved ones.",
     },
     {
-      number: "03",
-      title: "Peaceful Surroundings",
-      text: "Located in Virar East, Maya Niketan offers a quieter atmosphere surrounded by the natural character of the Palghar region.",
+      icon: Sparkles,
+      title: "Thoughtful Comfort",
+      description:
+        "From spacious bedrooms to the private pool, every corner has been designed with your comfort in mind, so you can truly relax and unwind.",
     },
     {
-      number: "04",
-      title: "Bookings Now Open",
-      text: "The villa is fully completed and now welcoming guests for staycations, holidays, weekend escapes and celebrations.",
+      icon: Leaf,
+      title: "Peaceful Escape",
+      description:
+        "Nestled in the serene surroundings of Virar East, the villa offers a calm retreat from the everyday rush, where you can slow down and reconnect.",
     },
   ];
 
-  const stayTypes = [
+  const milestones = [
     {
-      title: "Family Staycations",
-      text: "Spend quality time together in a private and relaxed villa setting.",
+      year: "2026",
+      title: "A Dream Comes to Life",
+      description:
+        "Maya Niketan Villa opens its doors in Virar East — a private 6BHK luxury pool villa created from a simple belief that the best moments are shared with the people who matter most.",
     },
     {
-      title: "Weekend Escapes",
-      text: "Take a refreshing break from the city without planning a long-distance trip.",
+      year: "2026",
+      title: "The Vision Behind the Villa",
+      description:
+        "Founded by Pratibha Singh, the villa was designed to blend the warmth of a family home with the elegance of a boutique retreat — a space where guests feel truly cared for.",
     },
     {
-      title: "Private Celebrations",
-      text: "Create memorable moments with your favourite people in a private setting.",
+      year: "2026",
+      title: "Welcoming Our First Guests",
+      description:
+        "From day one, Maya Niketan Villa became a preferred destination for staycations, family holidays, celebrations and private getaways across the Vasai–Virar region.",
     },
     {
-      title: "Holiday Stays",
-      text: "Slow down, reconnect and enjoy a comfortable getaway with family or friends.",
+      year: "2026",
+      title: "A New Chapter Begins",
+      description:
+        "With every stay, we continue to grow — building a reputation for privacy, comfort and heartfelt hospitality that keeps guests coming back.",
     },
   ];
 
-  // const nearbyPlaces = [
-  //   {
-  //     title: "Tungareshwar",
-  //     subtitle: "Nature & Hills",
-  //     text: "Explore the greener side of the Vasai–Virar region with its hills, trekking routes and seasonal landscapes.",
-  //   },
-  //   {
-  //     title: "Jivdani Temple",
-  //     subtitle: "Virar Landmark",
-  //     text: "One of Virar's most recognised spiritual landmarks located on Jivdani Hill.",
-  //   },
-  //   {
-  //     title: "Kaner–Dahisar Belt",
-  //     subtitle: "Peaceful Surroundings",
-  //     text: "A quieter side of the region with more open surroundings and a relaxed atmosphere away from crowded city areas.",
-  //   },
-  // ];
+  const stats = [
+    { value: "2026", label: "Established" },
+    { value: "6BHK", label: "Private Villa" },
+    { value: "4.9", label: "Guest Rating" },
+    { value: "24/7", label: "Guest Support" },
+  ];
 
   return (
-    <main
-      id="about"
-      className="w-full min-h-screen overflow-x-hidden bg-[#FAF8F5] text-slate-800 selection:bg-[#d5ae70] selection:text-slate-900"
-    >
-      {/* =====================================================
+    <div className="w-full overflow-x-hidden bg-[#f8f6f1]">
+      {/* ============================================
           HERO SECTION
-      ===================================================== */}
-      <section className="relative overflow-hidden bg-[#FAF8F5] text-slate-900 border-b border-stone-200/60">
-        <div className="relative mx-auto grid min-h-[85vh] max-w-7xl grid-cols-1 items-center gap-12 px-6 py-20 lg:grid-cols-12 lg:px-12 lg:py-28 xl:px-16">
-          {/* LEFT CONTENT */}
-          <div className="z-10 lg:col-span-7">
-            {/* BOOKING STATUS */}
-            <div className="inline-flex items-center gap-3 rounded-full border border-[#bd8c50]/30 bg-[#bd8c50]/10 px-4 py-2">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#bd8c50] opacity-75" />
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#bd8c50]" />
+      ============================================ */}
+      <section className="relative w-full overflow-hidden bg-[#0e382b] pt-32 pb-20 sm:pt-40 sm:pb-24 lg:pt-44 lg:pb-28">
+        <div className="pointer-events-none absolute inset-0 opacity-[0.03]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#d4ad72_1px,transparent_1px)] bg-[length:40px_40px]" />
+        </div>
+
+        <div className="pointer-events-none absolute -left-40 top-1/4 h-96 w-96 rounded-full bg-[#d4ad72]/10 blur-[120px]" />
+        <div className="pointer-events-none absolute -right-40 bottom-1/4 h-96 w-96 rounded-full bg-[#d4ad72]/5 blur-[120px]" />
+
+        <div className="relative mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-16 xl:px-24">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="mx-auto max-w-4xl text-center"
+          >
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#d4ad72]/30 bg-[#d4ad72]/10 px-4 py-1.5 backdrop-blur-md">
+              <Sparkles className="h-3.5 w-3.5 text-[#d4ad72]" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#d4ad72]">
+                Est. 2026
               </span>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#bd8c50]">
-                Villa Completed • Bookings Open
-              </p>
             </div>
 
-            {/* SMALL TITLE */}
-            <div className="mt-8 flex items-center gap-4">
-              <span className="h-[1px] w-12 bg-[#bd8c50]" />
-              <p className="font-serif text-lg italic tracking-wide text-[#bd8c50]">
-                Welcome to Maya Niketan Villa
-              </p>
-            </div>
-
-            {/* MAIN HEADING */}
-            <h1 className="mt-6 font-serif text-4xl font-normal leading-[1.1] text-slate-900 sm:text-5xl md:text-6xl lg:text-7xl">
-              Your Private Escape
-              <span className="mt-2 block italic text-[#bd8c50]">
-                Is Ready.
-              </span>
+            <h1 className="mt-6 font-serif text-4xl font-light leading-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+              The Story Behind
+              <br />
+              <span className="italic text-[#d4ad72]">Maya Niketan Villa</span>
             </h1>
 
-            <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-700 sm:text-lg">
-              Maya Niketan Villa is a completed 6BHK luxury private pool villa
-              in Virar East, created for relaxing staycations, family holidays,
-              weekend escapes and memorable celebrations.
+            <div className="mx-auto mt-8 h-[2px] w-20 bg-[#d4ad72]" />
+
+            <p className="mx-auto mt-8 max-w-3xl text-base font-light leading-relaxed text-white/70 sm:text-lg md:text-xl">
+              A vision born in 2026 from a simple belief — that the best moments
+              in life are the ones shared with the people who matter most, in a
+              space that feels truly your own.
             </p>
-
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-500 sm:text-base">
-              Leave the routine behind, gather your favourite people and enjoy
-              your time in a peaceful private setting designed for moments that
-              deserve to be remembered.
-            </p>
-
-            {/* CTA BUTTONS */}
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <a
-                href="contact"
-                className="inline-flex h-14 items-center justify-center rounded-sm bg-slate-900 px-8 text-xs font-bold uppercase tracking-[0.2em] text-white shadow-lg transition-all duration-300 hover:bg-[#bd8c50] hover:shadow-xl"
-              >
-                Book Your Stay
-              </a>
-
-              <a
-                href="#experience"
-                className="inline-flex h-14 items-center justify-center rounded-sm border border-slate-300 px-8 text-xs font-semibold uppercase tracking-[0.2em] text-slate-800 transition-all duration-300 hover:border-[#bd8c50] hover:text-[#bd8c50]"
-              >
-                Explore The Villa
-              </a>
-            </div>
-
-            {/* STATS */}
-            <div className="mt-14 grid grid-cols-3 gap-6 border-t border-slate-200 pt-8">
-              <div>
-                <p className="font-serif text-3xl font-light italic text-[#bd8c50] sm:text-4xl">
-                  6BHK
-                </p>
-                <p className="mt-1 text-[11px] font-medium uppercase tracking-widest text-slate-500">
-                  Private Villa
-                </p>
-              </div>
-
-              <div className="border-l border-slate-200 pl-6">
-                <p className="font-serif text-3xl font-light italic text-[#bd8c50] sm:text-4xl">
-                  Pool
-                </p>
-                <p className="mt-1 text-[11px] font-medium uppercase tracking-widest text-slate-500">
-                  Private Swimming
-                </p>
-              </div>
-
-              <div className="border-l border-slate-200 pl-6">
-                <p className="font-serif text-3xl font-light italic text-[#bd8c50] sm:text-4xl">
-                  Virar
-                </p>
-                <p className="mt-1 text-[11px] font-medium uppercase tracking-widest text-slate-500">
-                  Maharashtra
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* RIGHT IMAGE */}
-          <div className="relative lg:col-span-5">
-            <div className="absolute -inset-2 rounded-xl border border-[#bd8c50]/30 transition-all duration-500" />
-            <div className="relative aspect-[4/5] overflow-hidden rounded-lg shadow-xl">
-              <img
-                src="/images/10.jpg"
-                alt="Maya Niketan Villa private luxury villa"
-                className="h-full w-full object-cover transition-transform duration-1000 hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
-              <div className="absolute bottom-0 left-0 p-8">
-                <p className="font-serif text-2xl italic text-white sm:text-3xl">
-                  Stay. Celebrate. Reconnect.
-                </p>
-                <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#d5ae70]">
-                  Maya Niketan Villa
-                </p>
-              </div>
-            </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* =====================================================
-          INTRO SECTION
-      ===================================================== */}
-      <section className="bg-[#FAF8F5] py-20 lg:py-28">
-        <div className="mx-auto max-w-4xl px-6 text-center">
-          <p className="font-serif text-xl italic text-[#bd8c50]">
-            Your Private Getaway
-          </p>
+      {/* ============================================
+          FOUNDER SECTION - PRATIBHA SINGH
+      ============================================ */}
+      <section
+        ref={sectionRef}
+        className="relative w-full overflow-hidden bg-[#f8f6f1] py-20 md:py-24 lg:py-28"
+      >
+        <div className="pointer-events-none absolute -left-40 top-1/4 h-96 w-96 rounded-full bg-[#0e382b]/5 blur-[120px]" />
+        <div className="pointer-events-none absolute -right-40 bottom-1/4 h-96 w-96 rounded-full bg-[#9e793e]/15 blur-[120px]" />
 
-          <h2 className="mt-4 font-serif text-3xl leading-snug text-slate-900 sm:text-4xl lg:text-5xl">
-            Sometimes the best plans are simply{" "}
-            <span className="italic text-[#bd8c50]">
-              getting away together.
-            </span>
-          </h2>
+        <div className="relative mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-16 xl:px-24">
+          <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-16 xl:gap-24">
+            {/* LEFT - FOUNDER IMAGE */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="flex w-full items-center justify-center"
+            >
+              <div className="relative w-full max-w-[520px]">
+                <div className="absolute -left-4 -top-4 h-full w-full border-2 border-[#d4ad72]/30" />
+                <div className="absolute -bottom-4 -right-4 h-full w-full border-2 border-[#0e382b]/10" />
 
-          <div className="mx-auto mt-8 h-[2px] w-16 bg-[#d5ae70]" />
+                <div className="relative overflow-hidden bg-[#eae6dd] shadow-2xl">
+                  <img
+                    src="/images/ceo.jpg"
+                    alt="Pratibha Singh - Founder & CEO of Maya Niketan Villa"
+                    className="aspect-[4/5] w-full object-cover"
+                    onError={(e) => {
+                      e.target.style.display = "none";
+                    }}
+                  />
 
-          <p className="mt-8 text-base leading-relaxed text-slate-600 sm:text-lg">
-            Maya Niketan Villa gives you the space to slow down and enjoy the
-            people around you. Whether you are planning a family getaway,
-            weekend escape, holiday or private celebration, the villa offers a
-            peaceful setting where the experience can feel entirely your own.
-          </p>
-        </div>
-      </section>
+                  {/* Fallback Avatar */}
+                  <div className="absolute inset-0 -z-10 flex items-center justify-center bg-gradient-to-br from-[#0e382b] to-[#1a4a38]">
+                    <div className="text-center">
+                      <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-full bg-[#d4ad72]/20 backdrop-blur-sm">
+                        <span className="font-serif text-6xl text-[#d4ad72]">
+                          PS
+                        </span>
+                      </div>
+                      <p className="mt-6 font-serif text-2xl italic text-white">
+                        Pratibha Singh
+                      </p>
+                    </div>
+                  </div>
 
-      {/* =====================================================
-          EXPERIENCE CARDS
-      ===================================================== */}
-      <section id="experience" className="bg-[#FAF8F5] pb-20 lg:pb-28">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {experienceCards.map((item, index) => (
-              <article
-                key={index}
-                className="group relative flex flex-col justify-between rounded-md border border-stone-200/80 bg-[#F3EFEA] p-8 shadow-sm transition-all duration-500 hover:-translate-y-1.5 hover:border-[#bd8c50]/50 hover:bg-white hover:shadow-xl"
-              >
-                <div>
-                  <p className="font-serif text-sm italic tracking-widest text-[#bd8c50]">
-                    {item.number}
-                  </p>
-                  <h3 className="mt-6 font-serif text-2xl font-normal leading-snug text-slate-800 transition-colors duration-300 group-hover:text-[#bd8c50]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-4 text-sm leading-relaxed text-slate-600">
-                    {item.text}
-                  </p>
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <p className="text-[10px] uppercase tracking-[0.25em] text-[#d4ad72]">
+                      Founder & CEO
+                    </p>
+                    <p className="mt-1 font-serif text-2xl italic text-white">
+                      Pratibha Singh
+                    </p>
+                  </div>
                 </div>
-              </article>
+
+                <div className="mx-auto mt-6 flex items-center justify-center gap-3">
+                  <span className="h-[1px] w-10 bg-[#d4ad72]/50" />
+                  <span className="h-1.5 w-1.5 rotate-45 bg-[#d4ad72]" />
+                  <span className="h-[1px] w-10 bg-[#d4ad72]/50" />
+                </div>
+              </div>
+            </motion.div>
+
+            {/* RIGHT - FOUNDER MESSAGE */}
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              className="w-full"
+            >
+              <motion.div
+                variants={itemVariants}
+                className="inline-flex items-center gap-2 rounded-full border border-[#0e382b]/15 bg-[#0e382b]/5 px-4 py-1.5 backdrop-blur-md"
+              >
+                <Star className="h-3.5 w-3.5 text-[#9e793e]" />
+                <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#0e382b]">
+                  Meet Our Founder
+                </span>
+              </motion.div>
+
+              <motion.h2
+                variants={itemVariants}
+                className="mt-6 font-serif text-3xl font-light leading-tight text-[#0e382b] sm:text-4xl lg:text-[42px]"
+              >
+                A Vision of{" "}
+                <span className="italic text-[#9e793e]">
+                  Warmth & Hospitality
+                </span>
+              </motion.h2>
+
+              <motion.div
+                variants={itemVariants}
+                className="mt-6 h-[2px] w-16 bg-[#9e793e]"
+              />
+
+              <motion.div variants={itemVariants} className="mt-8">
+                <Quote className="h-10 w-10 text-[#d4ad72]/40" />
+              </motion.div>
+
+              <motion.p
+                variants={itemVariants}
+                className="mt-4 font-serif text-lg italic leading-relaxed text-[#555b54] sm:text-xl"
+              >
+                "I always believed that a home is not just four walls — it's a
+                feeling. Maya Niketan Villa was created to give families and
+                friends a place where they could pause, reconnect, and create
+                memories that last a lifetime."
+              </motion.p>
+
+              <motion.p
+                variants={itemVariants}
+                className="mt-6 text-base font-light leading-relaxed text-[#0e382b]/70 sm:text-lg"
+              >
+                In 2026, Pratibha Singh brought her vision to life — a private
+                retreat that combines the luxury of a boutique resort with the
+                warmth of a family home. With a deep love for bringing people
+                together and a commitment to heartfelt hospitality, she created
+                a space where every guest feels truly at ease.
+              </motion.p>
+
+              <motion.p
+                variants={itemVariants}
+                className="mt-4 text-base font-light leading-relaxed text-[#0e382b]/70 sm:text-lg"
+              >
+                Every detail at Maya Niketan Villa — from the spacious living
+                areas to the serene poolside — reflects her dedication to
+                creating moments that stay with you long after you leave.
+              </motion.p>
+
+              <motion.div
+                variants={itemVariants}
+                className="mt-8 border-t border-[#0e382b]/10 pt-6"
+              >
+                <p className="font-serif text-2xl italic text-[#0e382b]">
+                  Pratibha Singh
+                </p>
+                <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-[#9e793e]">
+                  Founder & CEO • Maya Niketan Villa • Est. 2026
+                </p>
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================
+          STATS SECTION
+      ============================================ */}
+      <section className="relative w-full overflow-hidden bg-[#0e382b] py-16 md:py-20">
+        <div className="pointer-events-none absolute inset-0 opacity-[0.03]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#d4ad72_1px,transparent_1px)] bg-[length:30px_30px]" />
+        </div>
+
+        <div className="relative mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-16 xl:px-24">
+          <div className="grid grid-cols-2 gap-6 sm:gap-8 lg:grid-cols-4">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="text-center"
+              >
+                <p className="font-serif text-4xl font-light text-[#d4ad72] sm:text-5xl lg:text-6xl">
+                  {stat.value}
+                </p>
+                <p className="mt-2 text-[10px] font-medium uppercase tracking-[0.2em] text-white/50 sm:text-xs">
+                  {stat.label}
+                </p>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* =====================================================
-          FULLY READY SECTION
-      ===================================================== */}
-      <section className="bg-white py-20 lg:py-28">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 px-6 lg:grid-cols-2 lg:px-12">
-          {/* IMAGE BLOCK */}
-          <div className="relative">
-            <div className="aspect-[5/4] overflow-hidden rounded-md shadow-lg">
-              <img
-                src="/images/10.jpg"
-                alt="Maya Niketan Villa surroundings"
-                className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-              />
-            </div>
-            <div className="absolute -bottom-6 -right-2 max-w-xs rounded-sm bg-slate-900 p-6 shadow-xl sm:right-6">
-              <p className="font-serif text-lg italic leading-snug text-[#d5ae70]">
-                Fully completed.
-                <br />
-                Ready for your stay.
-              </p>
-              <p className="mt-2 text-xs text-white/70">
-                Maya Niketan Villa is now welcoming bookings.
-              </p>
-            </div>
-          </div>
+      {/* ============================================
+          OUR VALUES SECTION
+      ============================================ */}
+      <section className="relative w-full overflow-hidden bg-[#f8f6f1] py-20 md:py-24 lg:py-28">
+        <div className="pointer-events-none absolute -left-40 top-1/4 h-96 w-96 rounded-full bg-[#0e382b]/5 blur-[120px]" />
 
-          {/* TEXT CONTENT */}
-          <div>
-            <p className="font-serif text-lg italic text-[#bd8c50]">
-              The Wait Is Over
-            </p>
-
-            <h2 className="mt-3 font-serif text-3xl font-normal leading-tight text-slate-800 sm:text-4xl lg:text-5xl">
-              Maya Niketan is
-              <span className="block italic text-[#bd8c50]">
-                ready to welcome you.
+        <div className="relative mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-16 xl:px-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mx-auto mb-14 max-w-4xl text-center md:mb-16"
+          >
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#0e382b]/15 bg-[#0e382b]/5 px-4 py-1.5 backdrop-blur-md">
+              <Heart className="h-3.5 w-3.5 text-[#9e793e]" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#0e382b]">
+                What We Stand For
               </span>
+            </div>
+
+            <h2 className="mt-6 font-serif text-3xl font-light leading-tight text-[#0e382b] sm:text-4xl md:text-5xl">
+              Our Core <span className="italic text-[#9e793e]">Values</span>
             </h2>
 
-            <p className="mt-6 text-base leading-relaxed text-slate-600">
-              From an idea to a completed destination, Maya Niketan Villa is now
-              ready for guests looking for their next private getaway in Virar
-              East.
+            <div className="mx-auto mt-6 h-[2px] w-20 bg-[#9e793e]" />
+
+            <p className="mx-auto mt-7 max-w-3xl text-base font-light leading-relaxed text-[#0e382b]/70 md:text-lg">
+              These principles guide everything we do — from how we welcome our
+              guests to how we care for every detail of your stay.
             </p>
+          </motion.div>
 
-            <p className="mt-4 text-base leading-relaxed text-slate-600">
-              The villa brings together generous space, a private pool, calm
-              surroundings and the freedom to enjoy your stay at your own pace.
-            </p>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {values.map((value, index) => {
+              const Icon = value.icon;
+              return (
+                <motion.div
+                  key={value.title}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="group relative overflow-hidden rounded-2xl border border-[#0e382b]/10 bg-white p-6 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-[#9e793e]/40 hover:shadow-xl sm:p-7"
+                >
+                  <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-[#0e382b]/5 transition-all duration-500 group-hover:bg-[#0e382b] group-hover:scale-110">
+                    <Icon className="h-7 w-7 text-[#0e382b] transition-colors duration-500 group-hover:text-[#d4ad72]" />
+                  </div>
 
-            <div className="mt-8 border-l-2 border-[#d5ae70] pl-6">
-              <p className="font-serif text-xl italic text-slate-800">
-                “Come for the stay. Leave with moments worth remembering.”
-              </p>
-            </div>
+                  <h3 className="font-serif text-xl font-medium text-[#0e382b] sm:text-2xl">
+                    {value.title}
+                  </h3>
 
-            <a
-              href="contact"
-              className="mt-10 inline-flex h-12 items-center justify-center rounded-sm bg-slate-900 px-8 text-xs font-semibold uppercase tracking-[0.2em] text-white transition-all duration-300 hover:bg-[#bd8c50] hover:text-white shadow-md hover:shadow-lg"
-            >
-              Check Availability
-            </a>
+                  <div className="mt-3 h-[2px] w-10 bg-[#9e793e]/40 transition-all duration-500 group-hover:w-16 group-hover:bg-[#9e793e]" />
+
+                  <p className="mt-4 text-sm font-light leading-relaxed text-[#0e382b]/60">
+                    {value.description}
+                  </p>
+
+                  <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-[#d4ad72] transition-all duration-500 group-hover:w-full" />
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* =====================================================
-          STAY TYPES
-      ===================================================== */}
-      <section className="bg-[#ECE5DD] py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
-            <div className="lg:col-span-5">
-              <p className="font-serif text-lg italic text-[#bd8c50]">
-                Made for Your Moments
-              </p>
-              <h2 className="mt-3 font-serif text-3xl leading-tight text-slate-900 sm:text-4xl lg:text-5xl">
-                Stay your way.
-                <span className="block italic text-[#bd8c50]">
-                  Make it memorable.
-                </span>
-              </h2>
-              <p className="mt-6 text-base leading-relaxed text-slate-600">
-                No two getaways need to look the same. Maya Niketan gives you
-                the setting — how you enjoy the experience is entirely yours.
-              </p>
+      {/* ============================================
+          JOURNEY / MILESTONES SECTION
+      ============================================ */}
+      <section className="relative w-full overflow-hidden bg-white py-20 md:py-24 lg:py-28">
+        <div className="pointer-events-none absolute -right-40 top-1/4 h-96 w-96 rounded-full bg-[#9e793e]/10 blur-[120px]" />
+
+        <div className="relative mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-16 xl:px-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mx-auto mb-14 max-w-4xl text-center md:mb-16"
+          >
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#0e382b]/15 bg-[#0e382b]/5 px-4 py-1.5 backdrop-blur-md">
+              <Calendar className="h-3.5 w-3.5 text-[#9e793e]" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#0e382b]">
+                Our Journey
+              </span>
             </div>
 
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-7">
-              {stayTypes.map((item, index) => (
-                <article
-                  key={index}
-                  className="border-t border-stone-300/80 pt-6"
+            <h2 className="mt-6 font-serif text-3xl font-light leading-tight text-[#0e382b] sm:text-4xl md:text-5xl">
+              The Beginning of{" "}
+              <span className="italic text-[#9e793e]">Something Special</span>
+            </h2>
+
+            <div className="mx-auto mt-6 h-[2px] w-20 bg-[#9e793e]" />
+
+            <p className="mx-auto mt-7 max-w-3xl text-base font-light leading-relaxed text-[#0e382b]/70 md:text-lg">
+              Maya Niketan Villa opened its doors in 2026 — a fresh chapter in
+              private luxury getaways in Virar East.
+            </p>
+          </motion.div>
+
+          <div className="relative">
+            <div className="absolute left-1/2 hidden h-full w-[1px] -translate-x-1/2 bg-gradient-to-b from-transparent via-[#9e793e]/30 to-transparent lg:block" />
+
+            <div className="space-y-10 lg:space-y-0">
+              {milestones.map((milestone, index) => (
+                <motion.div
+                  key={`${milestone.year}-${index}`}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.15 }}
+                  className={`relative flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-0 ${
+                    index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
+                  }`}
                 >
-                  <span className="font-serif text-sm italic text-[#bd8c50]">
-                    0{index + 1}
-                  </span>
-                  <h3 className="mt-3 font-serif text-2xl text-slate-800">
-                    {item.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                    {item.text}
-                  </p>
-                </article>
+                  <div
+                    className={`w-full lg:w-1/2 ${
+                      index % 2 === 0
+                        ? "lg:pr-16 lg:text-right"
+                        : "lg:pl-16 lg:text-left"
+                    }`}
+                  >
+                    <div className="group rounded-2xl border border-[#0e382b]/10 bg-[#f8f6f1] p-6 shadow-sm transition-all duration-500 hover:border-[#9e793e]/40 hover:shadow-lg sm:p-7">
+                      <p className="font-serif text-3xl font-light text-[#d4ad72] sm:text-4xl">
+                        {milestone.year}
+                      </p>
+
+                      <h3 className="mt-2 font-serif text-xl font-medium text-[#0e382b] sm:text-2xl">
+                        {milestone.title}
+                      </h3>
+
+                      <div
+                        className={`mt-3 h-[2px] w-10 bg-[#9e793e]/40 transition-all duration-500 group-hover:w-16 ${
+                          index % 2 === 0 ? "lg:ml-auto" : ""
+                        }`}
+                      />
+
+                      <p className="mt-4 text-sm font-light leading-relaxed text-[#0e382b]/60 sm:text-base">
+                        {milestone.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="absolute left-1/2 hidden -translate-x-1/2 lg:flex">
+                    <div className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-[#9e793e] bg-white shadow-md">
+                      <div className="h-1.5 w-1.5 rounded-full bg-[#9e793e]" />
+                    </div>
+                  </div>
+
+                  <div className="hidden lg:block lg:w-1/2" />
+                </motion.div>
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* =====================================================
-          LOCATION / NEARBY PLACES
-      ===================================================== */}
-      {/*---- <section className="bg-[#FAF8F5] py-20 text-slate-900 lg:py-28">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <div className="text-center">
-            <p className="font-serif text-lg italic text-[#bd8c50]">
-              Around Maya Niketan
-            </p>
-            <h2 className="mt-3 font-serif text-3xl text-slate-900 sm:text-4xl lg:text-5xl">
-              Escape the noise.
-              <span className="block italic text-[#bd8c50]">
-                Stay close to nature.
-              </span>
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base text-slate-600">
-              Maya Niketan Villa is located in Virar East, offering access to
-              the quieter character of the Vasai–Virar and Palghar region.
-            </p>
-          </div>
+      {/* ============================================
+          WHY CHOOSE US SECTION
+      ============================================ */}
+      <section className="relative w-full overflow-hidden bg-[#f8f6f1] py-20 md:py-24 lg:py-28">
+        <div className="pointer-events-none absolute -left-40 top-1/4 h-96 w-96 rounded-full bg-[#0e382b]/5 blur-[120px]" />
 
-          <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {nearbyPlaces.map((place, index) => (
-              <article
-                key={index}
-                className="group rounded-md border border-stone-200/80 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#bd8c50]/40 hover:shadow-md"
+        <div className="relative mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-16 xl:px-24">
+          <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-16 xl:gap-24">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full"
+            >
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#0e382b]/15 bg-[#0e382b]/5 px-4 py-1.5 backdrop-blur-md">
+                <Award className="h-3.5 w-3.5 text-[#9e793e]" />
+                <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#0e382b]">
+                  Why Guests Choose Us
+                </span>
+              </div>
+
+              <h2 className="mt-6 font-serif text-3xl font-light leading-tight text-[#0e382b] sm:text-4xl lg:text-[42px]">
+                More Than a Stay —{" "}
+                <span className="italic text-[#9e793e]">An Experience</span>
+              </h2>
+
+              <div className="mt-6 h-[2px] w-16 bg-[#9e793e]" />
+
+              <p className="mt-8 max-w-[650px] text-base font-light leading-relaxed text-[#0e382b]/70 sm:text-lg">
+                At Maya Niketan Villa, we don't just offer accommodation — we
+                create experiences. From the moment you arrive to the time you
+                leave, every detail is designed to make your stay effortless,
+                memorable, and truly special.
+              </p>
+
+              <div className="mt-8 space-y-4">
+                {[
+                  "Complete villa privacy — no shared spaces",
+                  "Spacious 6BHK with premium furnishings",
+                  "Private swimming pool with serene views",
+                  "Perfect for family gatherings & celebrations",
+                  "Convenient location in Virar East",
+                  "Dedicated support throughout your stay",
+                ].map((benefit, index) => (
+                  <motion.div
+                    key={benefit}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: index * 0.08 }}
+                    className="flex items-start gap-3"
+                  >
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#9e793e]" />
+                    <p className="text-sm font-light leading-relaxed text-[#0e382b]/80 sm:text-base">
+                      {benefit}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+                className="mt-10 flex flex-col gap-4 sm:flex-row"
               >
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#bd8c50]">
-                  {place.subtitle}
-                </p>
-                <h3 className="mt-4 font-serif text-2xl text-slate-800 transition-colors duration-300 group-hover:text-[#bd8c50]">
-                  {place.title}
-                </h3>
-                <p className="mt-4 text-sm leading-relaxed text-slate-600">
-                  {place.text}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section> ==*/}
+                <a
+                  href="/contact"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0e382b] px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-lg transition-all duration-300 hover:bg-[#9e793e] hover:shadow-xl"
+                >
+                  Book Your Stay
+                  <ArrowRight className="h-4 w-4" />
+                </a>
 
-      {/* =====================================================
-          BOOKING / MAP LOCATION
-      ===================================================== */}
-      <section id="booking" className="bg-[#FAF8F5] py-20 lg:py-28">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="rounded-md border border-stone-200 bg-white p-8 shadow-md md:p-14">
-            <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center">
-              <div className="lg:col-span-7">
-                <div className="inline-flex items-center gap-2 rounded-full bg-[#bd8c50]/10 border border-[#bd8c50]/20 px-4 py-1.5">
-                  <span className="h-2 w-2 rounded-full bg-[#bd8c50]" />
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#bd8c50]">
-                    Bookings Open
-                  </p>
+                <a
+                  href="/gallery"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#0e382b] bg-transparent px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.16em] text-[#0e382b] transition-all duration-300 hover:bg-[#0e382b] hover:text-white"
+                >
+                  View Gallery
+                </a>
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full"
+            >
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-4">
+                  <div className="overflow-hidden rounded-2xl shadow-lg">
+                    <img
+                      src="/images/1.jpg"
+                      alt="Maya Niketan Villa - Pool area"
+                      className="aspect-[4/5] w-full object-cover transition-transform duration-700 hover:scale-105"
+                    />
+                  </div>
+                  <div className="overflow-hidden rounded-2xl shadow-lg">
+                    <img
+                      src="/images/5.jpg"
+                      alt="Maya Niketan Villa - Living space"
+                      className="aspect-square w-full object-cover transition-transform duration-700 hover:scale-105"
+                    />
+                  </div>
                 </div>
 
-                <h2 className="mt-6 font-serif text-3xl font-normal leading-tight text-slate-800 sm:text-4xl lg:text-5xl">
-                  Ready for your
-                  <span className="block italic text-[#bd8c50]">
-                    next getaway?
-                  </span>
-                </h2>
-
-                <p className="mt-6 text-base leading-relaxed text-slate-600">
-                  Maya Niketan Villa is now accepting bookings for staycations,
-                  holidays, weekend escapes and private celebrations.
-                </p>
-
-                <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-                  <a
-                    href="contact"
-                    className="inline-flex h-12 items-center justify-center rounded-sm bg-slate-900 px-8 text-xs font-semibold uppercase tracking-[0.2em] text-white transition-all duration-300 hover:bg-[#bd8c50] shadow-md hover:shadow-lg"
-                  >
-                    Book Your Stay
-                  </a>
-
-                  <a
-                    href="https://www.google.com/maps/place/Maya+Niketan+Villa/@19.4897909,72.8643073,16z/data=!4m14!1m7!3m6!1s0x3be7a9bf8090607b:0x128c7626e4b677db!2sMaya+Niketan+Villa!8m2!3d19.4898127!4d72.8642998!16s%2Fg%2F11yzty7nfk!3m5!1s0x3be7a9bf8090607b:0x128c7626e4b677db!8m2!3d19.4898127!4d72.8642998!16s%2Fg%2F11yzty7nfk?entry=ttu&g_ep=EgoyMDI2MDkxMy4wIKXMDSoASAFQAw%3D%3D"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex h-12 items-center justify-center rounded-sm border border-slate-300 px-8 text-xs font-medium uppercase tracking-[0.2em] text-slate-800 transition-all duration-300 hover:border-[#bd8c50] hover:text-[#bd8c50] hover:bg-[#FAF8F5]"
-                  >
-                    View Location
-                  </a>
-                </div>
-              </div>
-
-              <div className="border-t border-slate-200 pt-8 lg:col-span-5 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
-                <p className="font-serif text-lg italic text-[#bd8c50]">
-                  Location
-                </p>
-
-                <h3 className="mt-2 font-serif text-2xl text-slate-800">
-                  Maya Niketan Villa
-                </h3>
-
-                <p className="mt-4 text-sm leading-relaxed text-slate-600">
-                  Mahakali Temple, Amul Virar Dairy,
-                  <br />
-                  Plot No. 114–117, Kaner–Dahisar Road,
-                  <br />
-                  Vasai–Virar, Maharashtra 401303, India
-                </p>
-
-                <div className="mt-6 border-t border-slate-200 pt-6">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#bd8c50]">
-                    Perfect For
-                  </p>
-                  <p className="mt-2 font-serif text-lg italic text-slate-800">
-                    Staycations • Holidays • Celebrations
-                  </p>
+                <div className="space-y-4 pt-8">
+                  <div className="overflow-hidden rounded-2xl shadow-lg">
+                    <img
+                      src="/images/3.jpg"
+                      alt="Maya Niketan Villa - Bedroom"
+                      className="aspect-square w-full object-cover transition-transform duration-700 hover:scale-105"
+                    />
+                  </div>
+                  <div className="overflow-hidden rounded-2xl shadow-lg">
+                    <img
+                      src="/images/7.jpg"
+                      alt="Maya Niketan Villa - Exterior"
+                      className="aspect-[4/5] w-full object-cover transition-transform duration-700 hover:scale-105"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+
+              <div className="mt-6 flex items-center justify-center gap-3">
+                <span className="h-[1px] w-10 bg-[#9e793e]/50" />
+                <span className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.2em] text-[#9e793e]">
+                  <MapPin className="h-3.5 w-3.5" />
+                  Virar East • Maharashtra
+                </span>
+                <span className="h-[1px] w-10 bg-[#9e793e]/50" />
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* =====================================================
-          FINAL CTA
-      ===================================================== */}
-      <section className="relative overflow-hidden bg-[#FAF8F5] py-20 text-slate-900 lg:py-28 border-t border-stone-200">
-        <div className="relative mx-auto max-w-3xl px-6 text-center">
-          <p className="font-serif text-lg italic text-[#bd8c50]">
-            Maya Niketan Villa
-          </p>
+      {/* ============================================
+          FINAL CTA SECTION
+      ============================================ */}
+      <section className="relative w-full overflow-hidden bg-[#0e382b] py-20 md:py-24 lg:py-28">
+        <div className="pointer-events-none absolute inset-0 opacity-[0.03]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#d4ad72_1px,transparent_1px)] bg-[length:40px_40px]" />
+        </div>
 
-          <h2 className="mt-4 font-serif text-3xl font-normal leading-tight text-slate-900 sm:text-4xl lg:text-5xl">
-            Your next memorable stay
-            <span className="block italic text-[#bd8c50]">begins here.</span>
-          </h2>
+        <div className="pointer-events-none absolute -left-40 top-1/4 h-96 w-96 rounded-full bg-[#d4ad72]/10 blur-[120px]" />
+        <div className="pointer-events-none absolute -right-40 bottom-1/4 h-96 w-96 rounded-full bg-[#d4ad72]/5 blur-[120px]" />
 
-          <p className="mt-6 text-base leading-relaxed text-slate-600">
-            The villa is complete. The pool is ready. Bookings are open. All
-            that's left is choosing when you want to escape.
-          </p>
-
-          <a
-            href="contact"
-            className="mt-10 inline-flex h-14 items-center justify-center rounded-sm bg-slate-900 px-10 text-xs font-bold uppercase tracking-[0.2em] text-white shadow-lg transition-all duration-300 hover:bg-[#bd8c50] hover:shadow-xl"
+        <div className="relative mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-16 xl:px-24">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="mx-auto max-w-4xl text-center"
           >
-            Book Maya Niketan
-          </a>
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#d4ad72]/30 bg-[#d4ad72]/10 px-4 py-1.5 backdrop-blur-md">
+              <Users className="h-3.5 w-3.5 text-[#d4ad72]" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#d4ad72]">
+                Be Our Guest
+              </span>
+            </div>
 
-          <p className="mt-6 text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500">
-            6BHK Private Pool Villa • Virar East
-          </p>
+            <h2 className="mt-6 font-serif text-3xl font-light leading-tight text-white sm:text-4xl md:text-5xl lg:text-[56px]">
+              Ready to Experience
+              <br />
+              <span className="italic text-[#d4ad72]">Maya Niketan Villa?</span>
+            </h2>
+
+            <div className="mx-auto mt-8 h-[2px] w-20 bg-[#d4ad72]" />
+
+            <p className="mx-auto mt-8 max-w-2xl text-base font-light leading-relaxed text-white/70 sm:text-lg md:text-xl">
+              Whether it's a peaceful staycation, a family celebration, or a
+              special occasion — we'd love to welcome you to your private
+              escape.
+            </p>
+
+            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <a
+                href="/contact"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#d4ad72] px-8 py-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#0e382b] shadow-lg transition-all duration-300 hover:bg-white hover:shadow-xl sm:text-sm"
+              >
+                Book Your Stay
+                <ArrowRight className="h-4 w-4" />
+              </a>
+
+              <a
+                href="/gallery"
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/30 bg-transparent px-8 py-4 text-xs font-semibold uppercase tracking-[0.16em] text-white transition-all duration-300 hover:border-white hover:bg-white/10 sm:text-sm"
+              >
+                Explore the Villa
+              </a>
+            </div>
+
+            <div className="mt-10 flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-10">
+              <a
+                href="tel:+919960572239"
+                className="flex items-center gap-2 text-sm font-light text-white/60 transition-colors hover:text-[#d4ad72]"
+              >
+                <span className="text-[#d4ad72]">📞</span>
+                +91 99605 72239
+              </a>
+
+              <a
+                href="mailto:info@mayaniketanvilla.com"
+                className="flex items-center gap-2 text-sm font-light text-white/60 transition-colors hover:text-[#d4ad72]"
+              >
+                <span className="text-[#d4ad72]">✉️</span>
+                info@mayaniketanvilla.com
+              </a>
+            </div>
+          </motion.div>
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

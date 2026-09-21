@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 
 const ImageSection = () => {
   const [revealed, setRevealed] = useState(false);
-
-  // ONE ORCHESTRATED ENTRANCE, ON MOUNT
   useEffect(() => {
     const timer = setTimeout(() => setRevealed(true), 150);
     return () => clearTimeout(timer);

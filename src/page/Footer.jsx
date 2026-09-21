@@ -128,7 +128,7 @@ const Footer = () => {
                     href="tel:+919960572239"
                     className="mt-0.5 block font-serif text-base font-medium text-[#0e382b] transition-colors duration-300 hover:text-[#9e793e]"
                   >
-                    +91 xxx xxx xxx
+                    +91 7219212239
                   </a>
                 </div>
 
@@ -140,7 +140,7 @@ const Footer = () => {
                     href="mailto:info@mayaniketanvilla.com"
                     className="mt-0.5 block text-sm font-light text-[#0e382b] transition-colors duration-300 hover:text-[#9e793e]"
                   >
-                    info@mayaniketanvilla.com
+                    mayaniketanvilla@gmail.com
                   </a>
                 </div>
               </div>
