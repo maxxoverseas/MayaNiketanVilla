@@ -19,7 +19,6 @@ const Home = () => {
       <LocationSection />
       <GallerySection />
       <TestimonialsSection />
-      <BookingSection />
     </main>
   );
 };

@@ -9,7 +9,6 @@ import ExperienceSection from "./page/ExperienceSection";
 import LocationSection from "./page/LocationSection";
 import GallerySection from "./page/GallerySection";
 import TestimonialsSection from "./page/TestimonialsSection";
-import BookingSection from "./page/BookingSection";
 import About from "./components/About";
 import Amenities from "./components/Amenities";
 import Location from "./components/Location";
@@ -30,7 +29,6 @@ const Home = () => {
       <GallerySection />
       <TestimonialsSection />
       <Booking />
-      {/* <BookingSection /> */}
     </main>
   );
 };
@@ -122,3 +120,6 @@ const App = () => {
 };
 
 export default App;
+
+//     URL:  =>   http://localhost:5173/admin
+//    Password:=>    maya2026admin
