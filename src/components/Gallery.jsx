@@ -285,43 +285,43 @@ const Gallery = () => {
   // Gallery images with categories
   const images = [
     {
-      src: "/images/1.jpg",
+      src: "/images/20.jpg",
       category: "pool",
       title: "Private Pool",
       subtitle: "Refresh & unwind",
     },
     {
-      src: "/images/2.jpg",
+      src: "/images/21.jpg",
       category: "living",
       title: "Living Area",
       subtitle: "Spacious comfort",
     },
     {
-      src: "/images/3.jpg",
+      src: "/images/22.jpg",
       category: "bedroom",
       title: "Master Bedroom",
       subtitle: "Restful retreat",
     },
     {
-      src: "/images/4.jpg",
+      src: "/images/23.jpg",
       category: "pool",
       title: "Poolside Moments",
       subtitle: "Sunny afternoons",
     },
     {
-      src: "/images/5.jpg",
+      src: "/images/24.jpg",
       category: "living",
       title: "Dining Space",
       subtitle: "Shared meals",
     },
     {
-      src: "/images/6.jpg",
+      src: "/images/25.jpg",
       category: "exterior",
       title: "Villa Exterior",
       subtitle: "Warm welcome",
     },
     {
-      src: "/images/7.jpg",
+      src: "/images/26.jpg",
       category: "bedroom",
       title: "Guest Room",
       subtitle: "Peaceful sleep",

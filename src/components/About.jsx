@@ -594,14 +594,14 @@ const About = () => {
                 <div className="space-y-4">
                   <div className="overflow-hidden rounded-2xl shadow-lg">
                     <img
-                      src="/images/1.jpg"
+                      src="/images/background1.jpg"
                       alt="Maya Niketan Villa - Pool area"
                       className="aspect-[4/5] w-full object-cover transition-transform duration-700 hover:scale-105"
                     />
                   </div>
                   <div className="overflow-hidden rounded-2xl shadow-lg">
                     <img
-                      src="/images/5.jpg"
+                      src="/images/8.jpg"
                       alt="Maya Niketan Villa - Living space"
                       className="aspect-square w-full object-cover transition-transform duration-700 hover:scale-105"
                     />
@@ -611,14 +611,14 @@ const About = () => {
                 <div className="space-y-4 pt-8">
                   <div className="overflow-hidden rounded-2xl shadow-lg">
                     <img
-                      src="/images/3.jpg"
+                      src="/images/9.jpg"
                       alt="Maya Niketan Villa - Bedroom"
                       className="aspect-square w-full object-cover transition-transform duration-700 hover:scale-105"
                     />
                   </div>
                   <div className="overflow-hidden rounded-2xl shadow-lg">
                     <img
-                      src="/images/7.jpg"
+                      src="/images/10.jpg"
                       alt="Maya Niketan Villa - Exterior"
                       className="aspect-[4/5] w-full object-cover transition-transform duration-700 hover:scale-105"
                     />
