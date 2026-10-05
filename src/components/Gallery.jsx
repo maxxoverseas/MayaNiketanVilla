@@ -4,13 +4,13 @@
 //   const galleryItems = [
 //     { src: "/images/1.jpg", title: "Exterior Grounds", category: "Outdoor" },
 //     { src: "/images/2.jpg", title: "Grand Living Area", category: "Interior" },
-//     { src: "/images/3.jpg", title: "Private Poolside", category: "Leisure" },
-//     { src: "/images/4.jpg", title: "Luxury Suite", category: "Bedrooms" },
-//     { src: "/images/5.jpg", title: "Dining Experience", category: "Living" },
-//     { src: "/images/6.jpg", title: "Garden Pathway", category: "Nature" },
-//     { src: "/images/7.jpg", title: "Sunset Deck", category: "Outdoor" },
-//     { src: "/images/8.jpg", title: "Lounge Area", category: "Interior" },
-//     { src: "/images/9.jpg", title: "Spacious Balcony", category: "Views" },
+//     { src: "/images/8.jpg", title: "Private Poolside", category: "Leisure" },
+//     { src: "/images/9.jpg", title: "Luxury Suite", category: "Bedrooms" },
+//     { src: "/images/10.jpg", title: "Dining Experience", category: "Living" },
+//     { src: "/images/20.jpg", title: "Garden Pathway", category: "Nature" },
+//     { src: "/images/21.jpg", title: "Sunset Deck", category: "Outdoor" },
+//     { src: "/images/22.jpg", title: "Lounge Area", category: "Interior" },
+//     { src: "/images/23.jpg", title: "Spacious Balcony", category: "Views" },
 //     {
 //       src: "/images/10.jpg",
 //       title: "Evening Illumination",
@@ -23,7 +23,7 @@
 //   useEffect(() => {
 //     const interval = setInterval(() => {
 //       setActive((prev) => (prev + 1) % galleryItems.length);
-//     }, 3500);
+//     }, 3000);
 
 //     return () => clearInterval(interval);
 //   }, [galleryItems.length]);
@@ -285,19 +285,19 @@ const Gallery = () => {
   // Gallery images with categories
   const images = [
     {
-      src: "/images/20.jpg",
+      src: "/images/8.jpg",
       category: "pool",
       title: "Private Pool",
       subtitle: "Refresh & unwind",
     },
     {
-      src: "/images/21.jpg",
+      src: "/images/25.jpg",
       category: "living",
       title: "Living Area",
       subtitle: "Spacious comfort",
     },
     {
-      src: "/images/22.jpg",
+      src: "/images/1.jpg",
       category: "bedroom",
       title: "Master Bedroom",
       subtitle: "Restful retreat",
@@ -315,7 +315,7 @@ const Gallery = () => {
       subtitle: "Shared meals",
     },
     {
-      src: "/images/25.jpg",
+      src: "/images/9.jpg",
       category: "exterior",
       title: "Villa Exterior",
       subtitle: "Warm welcome",
@@ -327,19 +327,19 @@ const Gallery = () => {
       subtitle: "Peaceful sleep",
     },
     {
-      src: "/images/8.jpg",
+      src: "/images/21.jpg",
       category: "exterior",
       title: "Garden View",
       subtitle: "Green surroundings",
     },
     {
-      src: "/images/9.jpg",
+      src: "/images/2.jpg",
       category: "pool",
       title: "Evening Pool",
       subtitle: "Golden hours",
     },
     {
-      src: "/images/10.jpg",
+      src: "/images/23.jpg",
       category: "living",
       title: "Lounge Area",
       subtitle: "Relax & chat",

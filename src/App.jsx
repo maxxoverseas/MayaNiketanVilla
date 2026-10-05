@@ -17,7 +17,6 @@ import Gallery from "./components/Gallery";
 import Contact from "./components/Contact";
 import Booking from "./page/Booking";
 import AdminBooking from "./page/AdminBooking";
-
 const Home = () => {
   return (
     <main className="w-full overflow-x-hidden">
