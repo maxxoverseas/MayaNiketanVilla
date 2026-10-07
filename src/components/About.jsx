@@ -698,19 +698,19 @@ const About = () => {
 
             <div className="mt-10 flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-10">
               <a
-                href="tel:+919960572239"
+                href="tel:+919373219602"
                 className="flex items-center gap-2 text-sm font-light text-white/60 transition-colors hover:text-[#d4ad72]"
               >
                 <span className="text-[#d4ad72]">📞</span>
-                +91 99605 72239
+                +91 9373219602
               </a>
 
               <a
-                href="mailto:info@mayaniketanvilla.com"
+                href="mailto:mayaniketanvilla@gmail.com"
                 className="flex items-center gap-2 text-sm font-light text-white/60 transition-colors hover:text-[#d4ad72]"
               >
                 <span className="text-[#d4ad72]">✉️</span>
-                info@mayaniketanvilla.com
+                mayaniketanvilla@gmail.com
               </a>
             </div>
           </motion.div>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import emailjs from "@emailjs/browser";
 import {
-  Calendar,
   Users,
   CheckCircle2,
   AlertCircle,
@@ -20,25 +19,15 @@ import {
   Loader2,
   Info,
   ArrowRight,
-  Navigation,
-  ExternalLink,
 } from "lucide-react";
+import CustomDatePicker from "../components/CustomDatePicker";
 
-const Contact = () => {
-  // ============================================
-  // EMAILJS CONFIG
-  // ============================================
-  const EMAILJS_SERVICE_ID = "service_82s52ru";
-  const EMAILJS_TEMPLATE_ID = "template_aub7pk7";
-  const EMAILJS_PUBLIC_KEY = "Qpq4-Y1HZCLjewHx6";
-  const OWNER_EMAIL = "mayaniketanvilla@gmail.com";
+const EMAILJS_SERVICE_ID = "service_82s52ru";
+const EMAILJS_TEMPLATE_ID = "template_aub7pk7";
+const EMAILJS_PUBLIC_KEY = "Qpq4-Y1HZCLjewHx6";
+const OWNER_EMAIL = "mayaniketanvilla@gmail.com";
 
-  const googleMapsLink =
-    "https://www.google.com/maps/place/Maya+Niketan+Villa/@19.4897909,72.8643073,16z/data=!4m14!1m7!3m6!1s0x3be7a9bf8090607b:0x128c7626e4b677db!2sMaya+Niketan+Villa!8m2!3d19.4898127!4d72.8642998!16s%2Fg%2F11yzty7nfk!3m5!1s0x3be7a9bf8090607b:0x128c7626e4b677db!8m2!3d19.4898127!4d72.8642998!16s%2Fg%2F11yzty7nfk";
-
-  // ============================================
-  // STATE
-  // ============================================
+const Booking = () => {
   const initialFormData = {
     name: "",
     mobile: "",
@@ -59,77 +48,47 @@ const Contact = () => {
   const [dateAvailable, setDateAvailable] = useState(true);
   const [checkingDate, setCheckingDate] = useState(false);
 
-  // ============================================
-  // BOOKED DATES (from localStorage)
-  // ============================================
-  const [bookedRanges, setBookedRanges] = useState(() => {
+  const [popup, setPopup] = useState({
+    open: false,
+    type: "success",
+    title: "",
+    message: "",
+  });
+
+  const [allBookings, setAllBookings] = useState(() => {
     if (typeof window === "undefined") return [];
     try {
-      const stored = localStorage.getItem("maya_booked_dates");
+      const stored = localStorage.getItem("maya_all_bookings");
       return stored ? JSON.parse(stored) : [];
     } catch {
       return [];
     }
   });
 
-  // ============================================
-  // BLOCKED DATES (from Admin)
-  // ============================================
-  const [blockedRanges, setBlockedRanges] = useState(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      const stored = localStorage.getItem("maya_blocked_dates");
-      return stored ? JSON.parse(stored) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  // ============================================
-  // RELOAD ON MOUNT + STORAGE CHANGE
-  // ============================================
+  // Reload bookings (real-time sync)
   useEffect(() => {
-    const loadBlocked = () => {
+    const loadBookings = () => {
       try {
-        const stored = localStorage.getItem("maya_blocked_dates");
-        setBlockedRanges(stored ? JSON.parse(stored) : []);
+        const stored = localStorage.getItem("maya_all_bookings");
+        setAllBookings(stored ? JSON.parse(stored) : []);
       } catch {
-        setBlockedRanges([]);
+        setAllBookings([]);
       }
     };
-
-    const loadBooked = () => {
-      try {
-        const stored = localStorage.getItem("maya_booked_dates");
-        setBookedRanges(stored ? JSON.parse(stored) : []);
-      } catch {
-        setBookedRanges([]);
-      }
+    const onStorage = (e) => {
+      if (e.key === "maya_all_bookings") loadBookings();
     };
-
-    const handleStorage = (e) => {
-      if (e.key === "maya_blocked_dates") loadBlocked();
-      if (e.key === "maya_booked_dates") loadBooked();
+    window.addEventListener("storage", onStorage);
+    loadBookings();
+    const interval = setInterval(loadBookings, 1500);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      clearInterval(interval);
     };
-
-    window.addEventListener("storage", handleStorage);
-    loadBlocked();
-    loadBooked();
-
-    return () => window.removeEventListener("storage", handleStorage);
   }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("maya_booked_dates", JSON.stringify(bookedRanges));
-    }
-  }, [bookedRanges]);
 
   const today = new Date().toISOString().split("T")[0];
 
-  // ============================================
-  // DATE HELPERS
-  // ============================================
   const parseDate = (dateStr) => {
     const [y, m, d] = dateStr.split("-").map(Number);
     return new Date(y, m - 1, d);
@@ -154,31 +113,35 @@ const Contact = () => {
     return s1 <= e2 && s2 <= e1;
   };
 
-  const findConflictingBooking = (checkIn, checkOut) => {
-    if (!checkIn || !checkOut) return null;
+  // ⚠️ ONLY "confirmed" bookings block the calendar.
+  // Pending / draft / attempted bookings are ignored.
+  const confirmedBookings = allBookings.filter(
+    (b) => b.status === "confirmed" && b.checkIn && b.checkOut
+  );
 
-    const bookedConflict = bookedRanges.find((booking) =>
-      rangesOverlap(checkIn, checkOut, booking.checkIn, booking.checkOut)
+  const getDateStatus = (dateStr) => {
+    if (dateStr < today) return "past";
+    const booked = confirmedBookings.find((b) =>
+      rangesOverlap(dateStr, dateStr, b.checkIn, b.checkOut)
     );
-    if (bookedConflict) return { ...bookedConflict, isBlocked: false };
-
-    const blockedConflict = blockedRanges.find((block) =>
-      rangesOverlap(checkIn, checkOut, block.checkIn, block.checkOut)
-    );
-    if (blockedConflict) return { ...blockedConflict, isBlocked: true };
-
-    return null;
+    if (booked) return "booked"; // ← red X + red bg
+    return "available";
   };
 
-  // ============================================
-  // DATE AVAILABILITY CHECK
-  // ============================================
+  const findConflictingBooking = (checkIn, checkOut) => {
+    if (!checkIn || !checkOut) return null;
+    return (
+      confirmedBookings.find((b) =>
+        rangesOverlap(checkIn, checkOut, b.checkIn, b.checkOut)
+      ) || null
+    );
+  };
+
   useEffect(() => {
     setDateError("");
     setDateAvailable(true);
 
     const { checkIn, checkOut } = formData;
-
     if (!checkIn || !checkOut) return;
 
     if (parseDate(checkOut) <= parseDate(checkIn)) {
@@ -188,36 +151,58 @@ const Contact = () => {
     }
 
     setCheckingDate(true);
-
     const timer = setTimeout(() => {
-      const conflicting = findConflictingBooking(checkIn, checkOut);
-      if (conflicting) {
+      const conflict = findConflictingBooking(checkIn, checkOut);
+      if (conflict) {
         setDateAvailable(false);
-        if (conflicting.isBlocked) {
-          setDateError(
-            "These dates are currently unavailable. Please choose different dates."
-          );
-        } else {
-          setDateError(
-            `These dates are not available. The villa is already booked from ${formatDate(
-              conflicting.checkIn
-            )} to ${formatDate(
-              conflicting.checkOut
-            )}. Please choose different dates.`
-          );
-        }
+        setDateError(
+          `Not available. The villa is already booked from ${formatDate(
+            conflict.checkIn
+          )} to ${formatDate(conflict.checkOut)}.`
+        );
       } else {
         setDateAvailable(true);
       }
       setCheckingDate(false);
-    }, 400);
+    }, 250);
 
     return () => clearTimeout(timer);
-  }, [formData.checkIn, formData.checkOut, bookedRanges, blockedRanges]);
+  }, [formData.checkIn, formData.checkOut, allBookings]);
 
-  // ============================================
-  // HANDLERS
-  // ============================================
+  const showPopup = (type, title, message) =>
+    setPopup({ open: true, type, title, message });
+  const closePopup = () => setPopup((p) => ({ ...p, open: false }));
+
+  const handleDateChange = (field, dateStr, status) => {
+    if (status === "booked" || status === "blocked") {
+      showPopup(
+        "error",
+        "❌ Not Available",
+        "This date is already booked. Please choose a different date."
+      );
+      return;
+    }
+    if (status === "past") {
+      showPopup("error", "Invalid Date", "Past dates cannot be selected.");
+      return;
+    }
+
+    setFormData((prev) => {
+      const updated = { ...prev, [field]: dateStr };
+      if (
+        field === "checkIn" &&
+        updated.checkOut &&
+        updated.checkOut <= dateStr
+      ) {
+        updated.checkOut = "";
+      }
+      return updated;
+    });
+
+    if (isSubmitted) setIsSubmitted(false);
+    if (submitError) setSubmitError("");
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -228,108 +213,228 @@ const Contact = () => {
     if (submitError) setSubmitError("");
   };
 
+  // ================================================
+  // SUBMIT — saves booking as "pending" (admin must approve)
+  // ================================================
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitError("");
 
     if (!formData.consent) {
-      alert("Please allow us to contact you regarding your booking enquiry.");
+      showPopup(
+        "error",
+        "Consent Required",
+        "Please allow us to contact you regarding your booking enquiry."
+      );
+      return;
+    }
+    if (!formData.checkIn || !formData.checkOut) {
+      showPopup(
+        "error",
+        "Dates Missing",
+        "Please select both check-in and check-out dates."
+      );
       return;
     }
 
-    if (!dateAvailable || dateError) {
-      alert("Please select available dates before submitting.");
-      return;
-    }
-
+    // Only block if a CONFIRMED booking already exists
     const conflict = findConflictingBooking(
       formData.checkIn,
       formData.checkOut
     );
     if (conflict) {
-      alert(
-        conflict.isBlocked
-          ? "Sorry! These dates are currently unavailable. Please choose different dates."
-          : `Sorry! These dates were just booked. Villa is unavailable from ${formatDate(
-              conflict.checkIn
-            )} to ${formatDate(conflict.checkOut)}.`
+      try {
+        const stored = localStorage.getItem("maya_all_bookings");
+        const list = stored ? JSON.parse(stored) : [];
+        list.push({
+          id: `attempt-${Date.now()}`,
+          name: formData.name,
+          mobile: formData.mobile,
+          email: formData.email,
+          checkIn: formData.checkIn,
+          checkOut: formData.checkOut,
+          guests: formData.guests,
+          purpose: formData.purpose,
+          message: formData.message,
+          status: "attempted-unavailable",
+          bookedAt: new Date().toISOString(),
+          submittedAt: new Date().toISOString(),
+        });
+        localStorage.setItem("maya_all_bookings", JSON.stringify(list));
+        setAllBookings(list);
+      } catch {}
+
+      try {
+        await emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          {
+            to_email: OWNER_EMAIL,
+            client_name: formData.name,
+            client_email: formData.email,
+            client_mobile: formData.mobile,
+            check_in: formatDate(formData.checkIn),
+            check_out: formatDate(formData.checkOut),
+            guests: formData.guests,
+            purpose: formData.purpose,
+            message: formData.message || "—",
+            submitted_at: new Date().toLocaleString("en-IN"),
+            reply_to: formData.email,
+            booking_status:
+              "❌ NOT AVAILABLE — Client tried to book already confirmed dates",
+          },
+          EMAILJS_PUBLIC_KEY
+        );
+      } catch (err) {
+        console.error(err);
+      }
+
+      showPopup(
+        "error",
+        "❌ Not Available",
+        `Sorry! These dates are already booked (${formatDate(
+          conflict.checkIn
+        )} → ${formatDate(
+          conflict.checkOut
+        )}). Your enquiry has been sent to the owner.`
       );
-      const storedBooked = localStorage.getItem("maya_booked_dates");
-      const storedBlocked = localStorage.getItem("maya_blocked_dates");
-      if (storedBooked) setBookedRanges(JSON.parse(storedBooked));
-      if (storedBlocked) setBlockedRanges(JSON.parse(storedBlocked));
       return;
     }
 
     setIsSubmitting(true);
 
-    try {
-      const templateParams = {
-        to_email: OWNER_EMAIL,
-        client_name: formData.name,
-        client_email: formData.email,
-        client_mobile: formData.mobile,
-        check_in: formatDate(formData.checkIn),
-        check_out: formatDate(formData.checkOut),
-        guests: formData.guests,
-        purpose: formData.purpose,
-        message: formData.message || "No additional details provided.",
-        submitted_at: new Date().toLocaleString("en-IN"),
-        reply_to: formData.email,
-      };
+    // ⚠️ Save as "pending" — NOT confirmed yet. Admin must approve.
+    const newBooking = {
+      id: `client-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      name: formData.name,
+      mobile: formData.mobile,
+      email: formData.email,
+      checkIn: formData.checkIn,
+      checkOut: formData.checkOut,
+      guests: formData.guests,
+      purpose: formData.purpose,
+      message: formData.message || "",
+      status: "pending", // ← admin must approve
+      bookedAt: new Date().toISOString(),
+      submittedAt: new Date().toISOString(),
+    };
 
+    try {
+      const stored = localStorage.getItem("maya_all_bookings");
+      const list = stored ? JSON.parse(stored) : [];
+      list.push(newBooking);
+      localStorage.setItem("maya_all_bookings", JSON.stringify(list));
+      setAllBookings(list);
+    } catch {}
+
+    try {
       await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
-        templateParams,
+        {
+          to_email: OWNER_EMAIL,
+          client_name: formData.name,
+          client_email: formData.email,
+          client_mobile: formData.mobile,
+          check_in: formatDate(formData.checkIn),
+          check_out: formatDate(formData.checkOut),
+          guests: formData.guests,
+          purpose: formData.purpose,
+          message: formData.message || "—",
+          submitted_at: new Date().toLocaleString("en-IN"),
+          reply_to: formData.email,
+          booking_status: "⏳ NEW BOOKING ENQUIRY — Pending Admin Confirmation",
+        },
         EMAILJS_PUBLIC_KEY
       );
 
-      const newBooking = {
-        checkIn: formData.checkIn,
-        checkOut: formData.checkOut,
-        name: formData.name,
-        mobile: formData.mobile,
-        email: formData.email,
-        guests: formData.guests,
-        purpose: formData.purpose,
-        bookedAt: new Date().toISOString(),
-      };
-
-      setBookedRanges((prev) => [...prev, newBooking]);
       setIsSubmitted(true);
       setFormData(initialFormData);
-
+      showPopup(
+        "success",
+        "Enquiry Sent Successfully! ✅",
+        `Your booking enquiry has been sent to ${OWNER_EMAIL}. Our team will confirm shortly.`
+      );
       window.scrollTo({ top: 300, behavior: "smooth" });
     } catch (error) {
-      console.error("EmailJS Error:", error);
+      console.error(error);
       setSubmitError(
-        "Failed to send your booking. Please try again or contact us at " +
-          OWNER_EMAIL
+        "Failed to send. Please try again or email " + OWNER_EMAIL
+      );
+      showPopup(
+        "error",
+        "Something Went Wrong",
+        "Failed to send your booking. Please try again."
       );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const upcomingBookings = bookedRanges
+  // ⚠️ Show booked dates ONLY if there is at least one admin-confirmed booking
+  const upcomingBookings = confirmedBookings
     .filter((b) => parseDate(b.checkOut) >= new Date())
     .sort((a, b) => parseDate(a.checkIn) - parseDate(b.checkIn))
-    .slice(0, 5);
+    .slice(0, 6);
 
-  // ============================================
-  // RENDER
-  // ============================================
   return (
     <div className="w-full overflow-x-hidden bg-[#f8f6f1]">
-      {/* MAIN */}
+      {/* POPUP */}
+      <AnimatePresence>
+        {popup.open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+            onClick={closePopup}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ type: "spring", damping: 22 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl sm:p-8"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div
+                  className={`flex h-16 w-16 items-center justify-center rounded-full ${
+                    popup.type === "success" ? "bg-emerald-100" : "bg-red-100"
+                  }`}
+                >
+                  {popup.type === "success" ? (
+                    <CheckCircle2 className="h-8 w-8 text-emerald-600" />
+                  ) : (
+                    <XCircle className="h-8 w-8 text-red-600" />
+                  )}
+                </div>
+                <h3 className="mt-4 font-serif text-xl font-semibold text-[#122216] sm:text-2xl">
+                  {popup.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">
+                  {popup.message}
+                </p>
+                <button
+                  type="button"
+                  onClick={closePopup}
+                  className="mt-6 w-full rounded-xl bg-[#122216] px-6 py-3 text-xs font-bold uppercase tracking-widest text-white transition-all hover:bg-[#b88e4c] hover:text-[#122216]"
+                >
+                  OK, Got It
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <section className="relative w-full overflow-hidden bg-[#f8f6f1] py-16 md:py-20 lg:py-24">
         <div className="pointer-events-none absolute -left-40 top-1/4 h-96 w-96 rounded-full bg-[#0e382b]/5 blur-[120px]" />
         <div className="pointer-events-none absolute -right-40 bottom-1/4 h-96 w-96 rounded-full bg-[#9e793e]/10 blur-[120px]" />
 
         <div className="relative mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-16 xl:px-24">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
-            {/* LEFT INFO PANEL */}
+            {/* LEFT PANEL */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -343,14 +448,11 @@ const Contact = () => {
                   Why Book With Us
                 </span>
               </div>
-
               <h2 className="mt-6 font-serif text-3xl font-light leading-tight text-[#0e382b] sm:text-4xl lg:text-[42px]">
                 A Seamless Booking{" "}
                 <span className="italic text-[#9e793e]">Experience</span>
               </h2>
-
               <div className="mt-6 h-[2px] w-16 bg-[#9e793e]" />
-
               <p className="mt-8 text-base font-light leading-relaxed text-[#0e382b]/70 sm:text-lg">
                 Real-time date availability, instant enquiry delivery, and
                 personal confirmation from our team.
@@ -376,7 +478,8 @@ const Contact = () => {
                   {
                     icon: Phone,
                     title: "Personal Support",
-                    text: "WhatsApp & call assistance available",
+                    // text: "WhatsApp & call assistance available",
+                    text: "+91 9373219602 , 8793900165",
                   },
                 ].map((item, idx) => {
                   const Icon = item.icon;
@@ -435,6 +538,7 @@ const Contact = () => {
                 </div>
               </div>
 
+              {/* ⚠️ "Currently Booked Dates" — ONLY renders if admin has confirmed at least one booking */}
               {upcomingBookings.length > 0 && (
                 <div className="mt-8 rounded-2xl border border-[#d4ad72]/30 bg-[#d4ad72]/5 p-5">
                   <div className="flex items-center gap-2">
@@ -492,22 +596,20 @@ const Contact = () => {
                       exit={{ opacity: 0, height: 0, marginBottom: 0 }}
                       className="overflow-hidden rounded-2xl border border-emerald-500/30 bg-emerald-50"
                     >
-                      <div className="p-5 flex gap-3">
+                      <div className="flex gap-3 p-5">
                         <CheckCircle2 className="h-6 w-6 shrink-0 text-emerald-600" />
                         <div>
                           <h4 className="font-serif text-lg font-semibold text-emerald-900">
                             Booking Request Sent Successfully!
                           </h4>
                           <p className="mt-1 text-sm text-emerald-700">
-                            Your booking enquiry has been sent to{" "}
+                            Your enquiry has been sent to{" "}
                             <span className="font-medium">{OWNER_EMAIL}</span>.
-                            We'll contact you shortly.
                           </p>
                         </div>
                       </div>
                     </motion.div>
                   )}
-
                   {submitError && (
                     <motion.div
                       initial={{ opacity: 0, height: 0, marginBottom: 0 }}
@@ -515,7 +617,7 @@ const Contact = () => {
                       exit={{ opacity: 0, height: 0, marginBottom: 0 }}
                       className="overflow-hidden rounded-2xl border border-red-500/30 bg-red-50"
                     >
-                      <div className="p-5 flex gap-3">
+                      <div className="flex gap-3 p-5">
                         <XCircle className="h-6 w-6 shrink-0 text-red-600" />
                         <div>
                           <h4 className="font-serif text-lg font-semibold text-red-900">
@@ -553,7 +655,6 @@ const Contact = () => {
                         />
                       </div>
                     </div>
-
                     <div>
                       <label
                         htmlFor="mobile"
@@ -569,7 +670,7 @@ const Contact = () => {
                           type="tel"
                           value={formData.mobile}
                           onChange={handleChange}
-                          placeholder="+91 98765 43210"
+                          placeholder="+91 9373219602"
                           required
                           className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-11 pr-4 text-sm font-medium text-slate-800 outline-none transition-all focus:border-[#b88e4c] focus:bg-white focus:ring-2 focus:ring-[#b88e4c]/20"
                         />
@@ -600,43 +701,30 @@ const Contact = () => {
                   </div>
 
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                    <div>
-                      <label
-                        htmlFor="checkIn"
-                        className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-600"
-                      >
-                        Check-In Date *
-                      </label>
-                      <input
-                        id="checkIn"
-                        name="checkIn"
-                        type="date"
-                        min={today}
-                        value={formData.checkIn}
-                        onChange={handleChange}
-                        required
-                        className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 text-sm font-medium text-slate-800 outline-none transition-all focus:border-[#b88e4c] focus:bg-white focus:ring-2 focus:ring-[#b88e4c]/20"
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="checkOut"
-                        className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-600"
-                      >
-                        Check-Out Date *
-                      </label>
-                      <input
-                        id="checkOut"
-                        name="checkOut"
-                        type="date"
-                        min={formData.checkIn || today}
-                        value={formData.checkOut}
-                        onChange={handleChange}
-                        required
-                        className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 text-sm font-medium text-slate-800 outline-none transition-all focus:border-[#b88e4c] focus:bg-white focus:ring-2 focus:ring-[#b88e4c]/20"
-                      />
-                    </div>
+                    <CustomDatePicker
+                      id="checkIn"
+                      label="Check-In Date"
+                      value={formData.checkIn}
+                      onChange={(ds, status) =>
+                        handleDateChange("checkIn", ds, status)
+                      }
+                      minDate={today}
+                      getDateStatus={getDateStatus}
+                      placeholder="dd-mm-yyyy"
+                      required
+                    />
+                    <CustomDatePicker
+                      id="checkOut"
+                      label="Check-Out Date"
+                      value={formData.checkOut}
+                      onChange={(ds, status) =>
+                        handleDateChange("checkOut", ds, status)
+                      }
+                      minDate={formData.checkIn || today}
+                      getDateStatus={getDateStatus}
+                      placeholder="dd-mm-yyyy"
+                      required
+                    />
                   </div>
 
                   <AnimatePresence mode="wait">
@@ -650,18 +738,17 @@ const Contact = () => {
                       >
                         <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
                         <p className="text-sm font-medium text-blue-800">
-                          Checking availability for your dates...
+                          Checking availability...
                         </p>
                       </motion.div>
                     )}
-
                     {!checkingDate && dateError && !dateAvailable && (
                       <motion.div
                         key="unavailable"
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="rounded-xl border border-red-500/30 bg-red-50 p-4 flex gap-3"
+                        className="flex gap-3 rounded-xl border border-red-500/30 bg-red-50 p-4"
                       >
                         <AlertCircle className="h-5 w-5 shrink-0 text-red-600" />
                         <div>
@@ -674,7 +761,6 @@ const Contact = () => {
                         </div>
                       </motion.div>
                     )}
-
                     {!checkingDate &&
                       !dateError &&
                       dateAvailable &&
@@ -685,7 +771,7 @@ const Contact = () => {
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
-                          className="rounded-xl border border-emerald-500/30 bg-emerald-50 p-4 flex gap-3"
+                          className="flex gap-3 rounded-xl border border-emerald-500/30 bg-emerald-50 p-4"
                         >
                           <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" />
                           <div>
@@ -724,13 +810,12 @@ const Contact = () => {
                         />
                       </div>
                     </div>
-
                     <div>
                       <label
                         htmlFor="purpose"
                         className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-600"
                       >
-                        Purpose of Stay *
+                        Booking For *
                       </label>
                       <select
                         id="purpose"
@@ -797,42 +882,28 @@ const Contact = () => {
                   </label>
 
                   <motion.button
-                    whileHover={{
-                      scale: dateAvailable && !isSubmitting ? 1.01 : 1,
-                    }}
-                    whileTap={{
-                      scale: dateAvailable && !isSubmitting ? 0.98 : 1,
-                    }}
+                    whileHover={{ scale: isSubmitting ? 1 : 1.01 }}
+                    whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
                     type="submit"
-                    disabled={isSubmitting || !dateAvailable || !!dateError}
-                    className={`
-                      mt-2 flex h-14 w-full items-center justify-center gap-3 rounded-xl
-                      text-xs font-bold uppercase tracking-widest transition-all
-                      ${
-                        isSubmitting || !dateAvailable || !!dateError
-                          ? "cursor-not-allowed bg-slate-300 text-slate-500"
-                          : "bg-[#122216] text-white shadow-lg hover:bg-[#b88e4c] hover:text-[#122216]"
-                      }
-                    `}
+                    disabled={isSubmitting}
+                    className={`mt-2 flex h-14 w-full items-center justify-center gap-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${
+                      isSubmitting
+                        ? "cursor-not-allowed bg-slate-300 text-slate-500"
+                        : "bg-[#122216] text-white shadow-lg hover:bg-[#b88e4c] hover:text-[#122216]"
+                    }`}
                   >
                     {isSubmitting ? (
                       <>
                         <Loader2 className="h-5 w-5 animate-spin" />
-                        Sending Request...
-                      </>
-                    ) : !dateAvailable || dateError ? (
-                      <>
-                        <XCircle className="h-5 w-5" />
-                        Dates Not Available
+                        Sending Enquiry...
                       </>
                     ) : (
                       <>
-                        Send Booking Request
+                        Send Enquiry
                         <Send className="h-4 w-4" />
                       </>
                     )}
                   </motion.button>
-
                   <p className="text-center text-[11px] leading-relaxed text-slate-400">
                     Your request will be sent to{" "}
                     <span className="font-medium text-slate-500">
@@ -844,10 +915,10 @@ const Contact = () => {
 
               <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <a
-                  href="tel:+917219212239"
+                  href="tel:+919373219602"
                   className="group flex items-center gap-4 rounded-2xl border border-[#0e382b]/10 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#9e793e]/40 hover:shadow-lg"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#0e382b]/5 transition-all duration-300 group-hover:bg-[#0e382b] group-hover:scale-110">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#0e382b]/5 transition-all duration-300 group-hover:scale-110 group-hover:bg-[#0e382b]">
                     <Phone className="h-5 w-5 text-[#0e382b] transition-colors duration-300 group-hover:text-[#d4ad72]" />
                   </div>
                   <div>
@@ -855,16 +926,15 @@ const Contact = () => {
                       Call Us
                     </p>
                     <p className="font-serif text-base text-[#0e382b]">
-                      +91 7219212239
+                      +91 9373219602
                     </p>
                   </div>
                 </a>
-
                 <a
                   href={`mailto:${OWNER_EMAIL}`}
                   className="group flex items-center gap-4 rounded-2xl border border-[#0e382b]/10 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#9e793e]/40 hover:shadow-lg"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#0e382b]/5 transition-all duration-300 group-hover:bg-[#0e382b] group-hover:scale-110">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#0e382b]/5 transition-all duration-300 group-hover:scale-110 group-hover:bg-[#0e382b]">
                     <Mail className="h-5 w-5 text-[#0e382b] transition-colors duration-300 group-hover:text-[#d4ad72]" />
                   </div>
                   <div>
@@ -882,186 +952,10 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* ============================================
-          MAP LOCATION SECTION
-      ============================================ */}
-      <section className="relative w-full overflow-hidden bg-white py-16 md:py-20 lg:py-24">
-        <div className="pointer-events-none absolute -left-40 top-1/4 h-96 w-96 rounded-full bg-[#0e382b]/5 blur-[120px]" />
-        <div className="pointer-events-none absolute -right-40 bottom-1/4 h-96 w-96 rounded-full bg-[#9e793e]/10 blur-[120px]" />
-
-        <div className="relative mx-auto max-w-[1600px] px-6 sm:px-10 lg:px-16 xl:px-24">
-          {/* HEADER */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="mx-auto mb-12 max-w-4xl text-center md:mb-14"
-          >
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#0e382b]/15 bg-[#0e382b]/5 px-4 py-1.5 backdrop-blur-md">
-              <Navigation className="h-3.5 w-3.5 text-[#9e793e]" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#0e382b]">
-                Find Us Easily
-              </span>
-            </div>
-
-            <h2 className="mt-6 font-serif text-3xl font-light leading-tight text-[#0e382b] sm:text-4xl md:text-5xl">
-              Visit{" "}
-              <span className="italic text-[#9e793e]">Maya Niketan Villa</span>
-            </h2>
-
-            <div className="mx-auto mt-6 h-[2px] w-20 bg-[#9e793e]" />
-
-            <p className="mx-auto mt-7 max-w-3xl text-base font-light leading-relaxed text-[#0e382b]/70 md:text-lg">
-              Conveniently located in Virar East, easily reachable via
-              Kaner–Dahisar Road. Use the map below for live directions.
-            </p>
-          </motion.div>
-
-          {/* MAP CONTAINER */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.15 }}
-            className="relative overflow-hidden rounded-3xl border border-[#0e382b]/10 bg-white shadow-2xl"
-          >
-            <iframe
-              title="Maya Niketan Villa Location"
-              src="https://www.google.com/maps?q=19.4898127,72.8642998&z=16&output=embed"
-              className="h-[380px] w-full border-0 sm:h-[450px] md:h-[500px] lg:h-[540px]"
-              loading="lazy"
-              allowFullScreen
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-
-            {/* DESKTOP INFO CARD OVERLAY */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="absolute left-6 top-6 hidden w-[360px] rounded-2xl border border-white/10 bg-[#0e382b]/95 p-6 text-white shadow-2xl backdrop-blur-xl md:block"
-            >
-              <div className="flex items-center gap-2">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
-                </span>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#d4ad72]">
-                  Now Open • Bookings Available
-                </p>
-              </div>
-
-              <h3 className="mt-4 font-serif text-2xl font-medium text-white">
-                Maya Niketan Villa
-              </h3>
-
-              <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.18em] text-[#d4ad72]/90">
-                6BHK Luxury Pool Villa
-              </p>
-
-              <div className="mt-4 h-[1px] w-12 bg-[#d4ad72]/40" />
-
-              <p className="mt-4 text-xs font-light leading-relaxed text-white/80">
-                Plot No. 114–117, near Mahakali Temple & Amul Virar Dairy,
-                Kaner–Dahisar Road, Vasai–Virar, Maharashtra 401303.
-              </p>
-
-              <a
-                href={googleMapsLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#d4ad72] transition-colors duration-300 hover:text-white"
-              >
-                Get Directions
-                <ExternalLink className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
-            </motion.div>
-
-            {/* MAP BADGE */}
-            <div className="absolute bottom-5 right-5 hidden rounded-lg border border-[#0e382b]/10 bg-[#0e382b] px-4 py-2.5 shadow-md sm:block">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#d4ad72]">
-                Virar East • Maharashtra
-              </p>
-            </div>
-          </motion.div>
-
-          {/* MOBILE INFO CARD */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-5 rounded-2xl border border-[#0e382b]/10 bg-[#f8f6f1] p-6 shadow-md md:hidden"
-          >
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-600" />
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9e793e]">
-                Now Open • Bookings Available
-              </p>
-            </div>
-
-            <h3 className="mt-3 font-serif text-2xl font-medium text-[#0e382b]">
-              Maya Niketan Villa
-            </h3>
-
-            <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#9e793e]">
-              6BHK Luxury Pool Villa
-            </p>
-
-            <p className="mt-4 text-xs font-light leading-relaxed text-[#0e382b]/70">
-              Plot No. 114–117, near Mahakali Temple & Amul Virar Dairy,
-              Kaner–Dahisar Road, Vasai–Virar, Maharashtra 401303, India
-            </p>
-
-            <a
-              href={googleMapsLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-5 inline-flex items-center gap-2 rounded-lg border border-[#0e382b] bg-transparent px-5 py-2.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#0e382b] transition-all duration-300 hover:bg-[#0e382b] hover:text-white"
-            >
-              Get Directions
-              <ExternalLink className="h-3.5 w-3.5" />
-            </a>
-          </motion.div>
-
-          {/* ACTION BUTTONS */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row"
-          >
-            <a
-              href={googleMapsLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex w-full items-center justify-center gap-2.5 rounded-lg border border-[#0e382b] bg-transparent px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.16em] text-[#0e382b] transition-all duration-300 hover:bg-[#0e382b] hover:text-white hover:shadow-lg sm:w-auto"
-            >
-              <Navigation className="h-4 w-4" />
-              Get Directions
-              <ExternalLink className="h-3.5 w-3.5" />
-            </a>
-
-            <a
-              href="tel:+917219212239"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#0e382b] px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-lg transition-all duration-300 hover:bg-[#9e793e] sm:w-auto"
-            >
-              <Phone className="h-4 w-4" />
-              Call for Directions
-            </a>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* FINAL CTA */}
       <section className="relative w-full overflow-hidden bg-[#0e382b] py-16 md:py-20">
         <div className="pointer-events-none absolute inset-0 opacity-[0.03]">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#d4ad72_1px,transparent_1px)] bg-[length:40px_40px]" />
         </div>
-
         <div className="relative mx-auto max-w-[1600px] px-6 text-center sm:px-10 lg:px-16 xl:px-24">
           <h2 className="font-serif text-2xl font-light text-white sm:text-3xl md:text-4xl">
             Have Questions Before Booking?
@@ -1070,7 +964,7 @@ const Contact = () => {
             Reach out to us on WhatsApp for instant assistance.
           </p>
           <a
-            href="https://wa.me/7219212239?text=Hi%20Maya%20Niketan%20Villa%2C%20I%20have%20a%20question%20about%20booking."
+            href="https://wa.me/9373219602?text=Hi%20Maya%20Niketan%20Villa%2C%20I%20have%20a%20question%20about%20booking."
             target="_blank"
             rel="noopener noreferrer"
             className="mt-8 inline-flex items-center justify-center gap-2 rounded-lg bg-[#d4ad72] px-8 py-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#0e382b] shadow-lg transition-all duration-300 hover:bg-white sm:text-sm"
@@ -1084,4 +978,4 @@ const Contact = () => {
   );
 };
 
-export default Contact;
+export default Booking;

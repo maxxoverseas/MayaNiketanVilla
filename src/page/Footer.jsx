@@ -125,10 +125,10 @@ const Footer = () => {
                     Phone & WhatsApp
                   </p>
                   <a
-                    href="tel:+919960572239"
+                    href="tel:+91 9373219602"
                     className="mt-0.5 block font-serif text-base font-medium text-[#0e382b] transition-colors duration-300 hover:text-[#9e793e]"
                   >
-                    +91 7219212239
+                    +91 9373219602
                   </a>
                 </div>
 

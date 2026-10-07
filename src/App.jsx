@@ -33,7 +33,7 @@ const Home = () => {
 };
 
 const FloatingWhatsApp = () => {
-  const phoneNumber = "919960572239";
+  const phoneNumber = "9373219602";
   const whatsappMessage = `*Welcome to*\n\n# Maya Niketan Villa`;
   const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
     whatsappMessage
