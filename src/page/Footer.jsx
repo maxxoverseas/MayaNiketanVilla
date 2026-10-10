@@ -32,7 +32,16 @@ const Footer = () => {
             </div>
 
             <h2 className="mt-4 font-serif text-3xl font-light text-[#0e382b] sm:text-4xl">
-              Maya Niketan <span className="italic text-[#9e793e]">Villa</span>
+              {/* Maya Niketan <span className="italic text-[#9e793e]">Villa</span> */}
+              <img
+                src="/images/maya-niketan-logo.png"
+                alt="Maya Niketan Villa"
+                className="
+    h-[100px]
+    w-[150px]
+    object-contain
+  "
+              />
             </h2>
 
             <p className="mt-4 text-sm font-light leading-relaxed text-[#0e382b]/75">
